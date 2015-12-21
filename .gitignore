@@ -53,5 +53,6 @@ Temporary Items
 
 archive/
 sqlitebrowser_200_b1_win/
+# binary files
 database.sqlite
 NeuroShmeeg.exe
