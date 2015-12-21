@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project xmlns="http://www.purebasic.com/namespace" version="1.0" creator="PureBasic 5.20 LTS (Windows - x86)">
+  <section name="config">
+    <options closefiles="1" openmode="0" name="NeuroShmeeg"/>
+  </section>
+  <section name="data">
+    <explorer view="" pattern="0"/>
+    <log show="1"/>
+    <lastopen date="2015-12-20 00:35" user="Angel" host="ANGEL"/>
+  </section>
+  <section name="files">
+    <file name="NeuroShmeeg 0.3.pb">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
+      <fingerprint md5="3d75a3bd4bd0f52d29b4f79f206ec212"/>
+    </file>
+    <file name="NeuroShmeegGUI.pbf">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
+      <fingerprint md5="c40f9e4000ec096a92770a83fe6cd126"/>
+    </file>
+  </section>
+  <section name="targets">
+    <target name="Default Target" enabled="1" default="1">
+      <inputfile value="NeuroShmeeg 0.3.pb"/>
+      <outputfile value="NeuroShmeeg.exe"/>
+      <executable value="NeuroShmeeg.exe"/>
+      <options unicode="1" xpskin="1" debug="1"/>
+      <compilecount enable="1" value="223"/>
+      <buildcount enable="1" value="3"/>
+    </target>
+  </section>
+</project>
