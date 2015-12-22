@@ -105,6 +105,10 @@ FillState("")
 ;{ TODO
 ; сделать так, чтобы при открытии окон автоматически обновлялись гаджеты
 ; сделать так, чтобы при выборе провизора или аптеки обновлялась информация о них
+; снятие копии инструкции после маркировки
+; таксирование рецепта
+; снятие копии рецепта
+; ПОВЫСИТЬ ГРАНУЛЯРНОСТЬ!""2221111
 ;}
 
 
@@ -276,8 +280,8 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 226
-; FirstLine = 96
+; CursorPosition = 110
+; FirstLine = 30
 ; Folding = Ay
 ; EnableUnicode
 ; EnableXP

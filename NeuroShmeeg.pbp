@@ -7,12 +7,12 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-12-20 00:35" user="Angel" host="ANGEL"/>
+    <lastopen date="2015-12-22 22:32" user="Angel" host="ANGEL"/>
   </section>
   <section name="files">
     <file name="NeuroShmeeg 0.3.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="3d75a3bd4bd0f52d29b4f79f206ec212"/>
+      <fingerprint md5="e8d73e4201c1f773c0009b5b01ce554a"/>
     </file>
     <file name="NeuroShmeegGUI.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
