@@ -7,16 +7,16 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-12-22 22:32" user="Angel" host="ANGEL"/>
+    <lastopen date="2015-12-22 23:18" user="Angel" host="ANGEL"/>
   </section>
   <section name="files">
     <file name="NeuroShmeeg 0.3.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="e8d73e4201c1f773c0009b5b01ce554a"/>
+      <fingerprint md5="f06e6bd723bc07c9d6462b45e8d02b0f"/>
     </file>
     <file name="NeuroShmeegGUI.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="c40f9e4000ec096a92770a83fe6cd126"/>
+      <fingerprint md5="7101cb2abb32d04a5010669bfad116dc"/>
     </file>
   </section>
   <section name="targets">
@@ -25,8 +25,8 @@
       <outputfile value="NeuroShmeeg.exe"/>
       <executable value="NeuroShmeeg.exe"/>
       <options unicode="1" xpskin="1" debug="1"/>
-      <compilecount enable="1" value="223"/>
-      <buildcount enable="1" value="3"/>
+      <compilecount enable="1" value="224"/>
+      <buildcount enable="1" value="4"/>
     </target>
   </section>
 </project>
