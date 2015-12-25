@@ -94,6 +94,14 @@ Procedure GadgetsUpdate()
 ;   #ComboOrganisationName
 ;   #ComboProvisor
 EndProcedure
+Procedure FixAdOps(Gadget, opName.s)
+  mode.s
+  If GetGadgetState(Gadget) = 1 : mode = opname+"_on" : Else : mode = opname+"_off" : EndIf
+  ts = Date()*1000
+  cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
+  query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', '"+mode+"', '"+Str(ts)+"')"
+  FillState(query)
+EndProcedure
 
 OpenWindowMain() : StickyWindow(#WindowMain, 1)
 SetWindowTitle(#WindowMain, "NeuroShmeeg 0.3."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount))
@@ -158,7 +166,7 @@ Repeat
       EndIf
     EndIf
     ;}
-    
+    Debug GetGadgetText(Gadget)
     Select Gadget
       Case #b00 ; постановка в очередь
         ts = Date()*1000+ElapsedMilliseconds()-sET
@@ -171,73 +179,95 @@ Repeat
         If CountGadgetItems(#ListIconQueue) = 0
           AddGadgetItem(#ListIconQueue, -1, Str(CountGadgetItems(#ListIconQueue)+1)+Chr(10)+Str(ts))
         EndIf
-        SetGadgetState(#ListIconQueue, 0)
+        If (GetGadgetState(#ListIconQueue) = -1) : SetGadgetState(#ListIconQueue, 0) : EndIf
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'inm', '"+Str(ts)+"')"
         FillState(query)
       Case #b02
-        ts = Date()
+        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'phe', '"+Str(ts)+"')"
         FillState(query)
       Case #b03
-        ts = Date()
+        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'sea', '"+Str(ts)+"')"
         FillState(query)
       Case #b04
-        ts = Date()
+        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'phc', '"+Str(ts)+"')"
         FillState(query)
       Case #b05
-        ts = Date()
+        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'sis', '"+Str(ts)+"')"
         FillState(query)
       Case #b06
-        ts = Date()
+        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'ssp', '"+Str(ts)+"')"
         FillState(query)
       Case #b07
-        ts = Date()
+        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'fch', '"+Str(ts)+"')"
         FillState(query)
       Case #b08
-        ts = Date()
+        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'prd', '"+Str(ts)+"')"
         FillState(query)
       Case #b09
-        ts = Date()
+        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'gar', '"+Str(ts)+"')"
         FillState(query)
       Case #b10
         If MessageRequester("Буэээ","Расчет осуществлен при помощи наличных денеждных значков?", #MB_YESNO | #MB_ICONQUESTION) = #PB_MessageRequester_Ok
-          ts = Date()
+          ts = Date()*1000
           cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
           query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'pcs', '"+Str(ts)+"')"
           FillState(query)
         Else
-          ts = Date()
+          ts = Date()*1000
           cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
           query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'pcr', '"+Str(ts)+"')"
           FillState(query)
         EndIf
       Case #b11
-        ts = Date()
+        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'bsd', '"+Str(ts)+"')"
         FillState(query)
       Case #bExit
-        ts = Date()
+        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'END', '"+Str(ts)+"')"
         FillState(query)
         EndMaintaince()        
+        SetGadgetState(#b01, 0)
+        ;--------------------------------------------------------
+      Case #bops01
+        FixAdOps(Gadget, "tinf") ; #bops01 "Информирование по телефону"
+      Case #bops02
+        FixAdOps(Gadget, "qcon") ; #bops02 "Контроль качества"
+      Case #bops03
+        FixAdOps(Gadget, "vitf") ; #bops03 "Оформление витрин"
+      Case #bops04
+        FixAdOps(Gadget, "docf") ; #bops04 "Ведение учета и отчетности"
+      Case #bops05
+        FixAdOps(Gadget, "sang") ; #bops05 "Сан-просветительная работа"
+      Case #bops06
+        FixAdOps(Gadget, "cmdt") ; #bops06 "Приемка товара"
+      Case #bops07
+        FixAdOps(Gadget, "ctrn") ; #bops07 "Пополнение отделов аптеки"
+      Case #bops08
+        FixAdOps(Gadget, "expd") ; #bops08 "Контроль сроков годности"
+      Case #bops09
+        FixAdOps(Gadget, "clms") ; #bops09 "Работа с замечаниями"
+      Case #bops10
+        FixAdOps(Gadget, "sedt") ; #bops10 "Выявление побочных реакций"
         ; -------------------------------------------------------  
       Case #ButtonRx
         If GetGadgetState(#ButtonRx) = 0 : i = -1 : Else : i = 1 : EndIf
@@ -296,9 +326,9 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 180
-; FirstLine = 45
-; Folding = Ak
+; CursorPosition = 99
+; FirstLine = 4
+; Folding = AI-
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29

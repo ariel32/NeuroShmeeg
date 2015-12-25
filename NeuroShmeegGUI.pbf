@@ -1,4 +1,4 @@
-﻿Global Frame0, Text0
+﻿Global Frame0, Frame0, Frame0, Frame0, Frame0, Frame0, Text0, Text0, Text0, Text0, Frame0, Frame0, Frame0, Frame0
 
 Enumeration FormWindow
   #WindowMain
@@ -28,16 +28,16 @@ Enumeration FormGadget
   #ButtonRxCopy
   #ButtonInstructionCopy
   #bExit
-  #Button23
-  #Button22
-  #Button25
-  #Button24
-  #Button27
-  #Button26
-  #Button29
-  #Button28
-  #Button211
-  #Button210
+  #bops01
+  #bops02
+  #bops03
+  #bops04
+  #bops05
+  #bops06
+  #bops07
+  #bops08
+  #bops09
+  #bops10
   #ComboProvisor
   #EditorCSDescription
   #ComboCSCategory
@@ -63,7 +63,7 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 540, height = 540)
   ButtonGadget(#ButtonNotRx, 340, 10, 80, 20, "Рецепт -", #PB_Button_Toggle)
   ButtonGadget(#ButtonIMT, 430, 10, 80, 20, "ИМТ/ТАА", #PB_Button_Toggle)
   ButtonGadget(#ButtonRxL, 180, 10, 80, 20, "Рецепт + L", #PB_Button_Toggle)
-  ListIconGadget(#ListIconQueue, 10, 40, 160, 280, "#", 50, #PB_ListIcon_FullRowSelect)
+  ListIconGadget(#ListIconQueue, 10, 40, 160, 280, "#", 50, #PB_ListIcon_FullRowSelect | #PB_ListIcon_AlwaysShowSelection)
   AddGadgetColumn(#ListIconQueue, 1, "ID", 100)
   ButtonGadget(#b00, 180, 40, 330, 20, "00: Постановка в очередь")
   ButtonGadget(#b01, 180, 60, 330, 20, "01: Обращение к провизору", #PB_Button_Toggle)
@@ -78,22 +78,22 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 540, height = 540)
   ButtonGadget(#b10, 180, 240, 330, 20, "10: Расчет", #PB_Button_Toggle)
   ButtonGadget(#b11, 180, 260, 330, 20, "11: Оформление оборотной стороны", #PB_Button_Toggle)
   ButtonGadget(#b12, 180, 280, 165, 20, "12: Таксировка рецепта", #PB_Button_Toggle)
-  ButtonGadget(#ButtonRxCopy, 345, 300, 165, 20, "Снятие копии рецепта", #PB_Button_Toggle)
-  ButtonGadget(#ButtonInstructionCopy, 180, 300, 165, 20, "Снятие копии инструкции", #PB_Button_Toggle)
+  ButtonGadget(#b13, 345, 280, 165, 20, "13: Оформление корешка", #PB_Button_Toggle)
+  ButtonGadget(#ButtonRxCopy, 345, 300, 165, 20, "15: Копирование рецепта", #PB_Button_Toggle)
+  ButtonGadget(#ButtonInstructionCopy, 180, 300, 165, 20, "14: Копирование инструкции", #PB_Button_Toggle)
   ButtonGadget(#bExit, 10, 330, 500, 20, "Ашельме махельме")
   Frame0 = FrameGadget(#PB_Any, 10, 350, 500, 130, "Работы, не связанные с реализацией товаров из аптеки")
-  ButtonGadget(#Button23, 260, 370, 240, 20, "Приемка товара")
-  ButtonGadget(#Button22, 20, 370, 240, 20, "Информирование по телефону")
-  ButtonGadget(#Button25, 260, 390, 240, 20, "Пополнение отделов аптеки")
-  ButtonGadget(#Button24, 20, 390, 240, 20, "Контроль качества")
-  ButtonGadget(#Button27, 260, 410, 240, 20, "Контроль сроков годности")
-  ButtonGadget(#Button26, 20, 410, 240, 20, "Оформление витрин")
-  ButtonGadget(#Button29, 260, 430, 240, 20, "Работа с замечаниями")
-  ButtonGadget(#Button28, 20, 430, 240, 20, "Ведение учета и отчетности")
-  ButtonGadget(#Button211, 260, 450, 240, 20, "Выявление побочных реакций")
-  ButtonGadget(#Button210, 20, 450, 240, 20, "Сан-просветительная работа")
+  ButtonGadget(#bops01, 20, 370, 240, 20, "Информирование по телефону", #PB_Button_Toggle)
+  ButtonGadget(#bops02, 20, 390, 240, 20, "Контроль качества", #PB_Button_Toggle)
+  ButtonGadget(#bops03, 20, 410, 240, 20, "Оформление витрин", #PB_Button_Toggle)
+  ButtonGadget(#bops04, 20, 430, 240, 20, "Ведение учета и отчетности", #PB_Button_Toggle)
+  ButtonGadget(#bops05, 20, 450, 240, 20, "Сан-просветительная работа", #PB_Button_Toggle)
+  ButtonGadget(#bops06, 260, 370, 240, 20, "Приемка товара", #PB_Button_Toggle)
+  ButtonGadget(#bops07, 260, 390, 240, 20, "Пополнение отделов аптеки", #PB_Button_Toggle)
+  ButtonGadget(#bops08, 260, 410, 240, 20, "Контроль сроков годности", #PB_Button_Toggle)
+  ButtonGadget(#bops09, 260, 430, 240, 20, "Работа с замечаниями", #PB_Button_Toggle)
+  ButtonGadget(#bops10, 260, 450, 240, 20, "Выявление побочных реакций", #PB_Button_Toggle)
   ComboBoxGadget(#ComboProvisor, 10, 10, 160, 20, #PB_ComboBox_Editable)
-  ButtonGadget(#b13, 345, 280, 165, 20, "13: Оформление корешка", #PB_Button_Toggle)
   AddGadgetItem(#Panel, -1, "Добавление объектов")
   Frame0 = FrameGadget(#PB_Any, 260, 10, 250, 50, "Категория аптеки")
   Frame0 = FrameGadget(#PB_Any, 10, 60, 240, 50, "Название аптеки")
@@ -141,7 +141,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 19
+; CursorPosition = 39
+; FirstLine = 25
 ; Folding = -
 ; EnableUnicode
 ; EnableXP
