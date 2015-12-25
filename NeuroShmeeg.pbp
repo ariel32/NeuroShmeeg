@@ -7,29 +7,29 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2015-12-25 20:14" user="Angel" host="ANGEL"/>
+    <lastopen date="2015-12-26 02:39" user="Angel" host="ANGEL"/>
   </section>
   <section name="files">
-    <file name="NeuroShmeeg 0.3.pb">
-      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="5c4f6909a770d5413446bbd708e2bfcc"/>
-    </file>
     <file name="NeuroShmeegGUI.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="928f7a375a521f19f885f9ba9651190a"/>
+      <fingerprint md5="5f74395b5b7ccfb83ee49e6da8dcadfa"/>
+    </file>
+    <file name="NeuroShmeeg.pb">
+      <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
+      <fingerprint md5="e89abefc878e0cb718e1d5a88d3f7881"/>
     </file>
   </section>
   <section name="targets">
     <target name="Default Target" enabled="1" default="1">
-      <inputfile value="NeuroShmeeg 0.3.pb"/>
+      <inputfile value="NeuroShmeeg.pb"/>
       <outputfile value="NeuroShmeeg.exe"/>
       <executable value="NeuroShmeeg.exe"/>
       <options unicode="1" xpskin="1" debug="1"/>
       <icon enable="1">
         hypnotoad.ico
       </icon>
-      <compilecount enable="1" value="288"/>
-      <buildcount enable="1" value="5"/>
+      <compilecount enable="1" value="4"/>
+      <buildcount enable="1" value="3"/>
     </target>
   </section>
 </project>

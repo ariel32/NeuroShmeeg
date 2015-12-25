@@ -43,14 +43,13 @@ Procedure EDnableIMT(state.i)
 EndProcedure
 Procedure EDnableRxPlus(state.i)
   If(state = -1 ) : state = 1 : Else : state = 0 : EndIf
-  DisableGadget(#b02, state) : DisableGadget(#b03, state) : DisableGadget(#b11, state)
-  SetGadgetState(#b02, 0) : SetGadgetState(#b03, 0) : SetGadgetState(#b11, 0)
-  SetGadgetState(#ButtonRxCopy, 0)
+  For x = #b02 To #b07 : DisableGadget(x, state) : SetGadgetState(x, 0) : Next
+  For x = #b11 To #ButtonInstructionCopy : DisableGadget(x, state) : SetGadgetState(x, 0) : Next
+  If (GetGadgetState(#ButtonRxL) <> 1) : DisableGadget(#b13, 1) : SetGadgetState(#b13, 0) : EndIf
 EndProcedure
 Procedure EDnableRxL(state.i)
   If(state = -1 ) : state = 1 : Else : state = 0 : EndIf
   If (GetGadgetState(#ButtonRx) = 0) : SetGadgetState(#ButtonRx, 1) : EDnableRxPlus(0) : EndIf
-  DisableGadget(#b13, state)
 EndProcedure
 Procedure TogleCommon()
   SetGadgetState(#b04, 0)
@@ -90,9 +89,9 @@ Procedure GadgetsUpdate()
     Debug "Can't open database !"
   EndIf
   
-;   #ComboCSName
-;   #ComboOrganisationName
-;   #ComboProvisor
+  ;   #ComboCSName
+  ;   #ComboOrganisationName
+  ;   #ComboProvisor
 EndProcedure
 Procedure FixAdOps(Gadget, opName.s)
   mode.s
@@ -282,6 +281,7 @@ Repeat
         EDnableRxL(i)
       Case #ButtonNotRx
         If GetGadgetState(#ButtonNotRx) = 0 : i = -1 : Else : i = 1 : EndIf
+        DisableGadget(#ButtonInstructionCopy, 0)
         cMode = cMode + i*2
       Case #ButtonIMT
         Debug 3
@@ -318,8 +318,11 @@ Repeat
         EndIf
     EndSelect
     
-  If cMode = 0 : For x = #b02 To #ButtonInstructionCopy: DisableGadget(x, 1) : Next : EndIf  
-    
+    If cMode = 0 : For x = #b02 To #ButtonInstructionCopy: DisableGadget(x, 1) : Next : EndIf  
+    If GetGadgetState(#ButtonRx) : EDnableRxPlus(1) : EndIf
+    If GetGadgetState(#buttonRx) = 0 And GetGadgetState(#buttonNotRX) = 0 And GetGadgetState(#buttonRxL) = 0 And GetGadgetState(#buttonIMT) = 0
+      For x = #b02 To #buttonRxCopy : DisableGadget(x, 1) : SetGadgetState(x, 0) : Next
+    EndIf
   EndIf
   
   If CountGadgetItems(#ListIconQueue) = 0 : DisableGadget(#b00, 1) : Else : DisableGadget(#b00, 0) : EndIf
@@ -327,9 +330,9 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 293
-; FirstLine = 174
-; Folding = AY-
+; CursorPosition = 322
+; FirstLine = 277
+; Folding = ---
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
