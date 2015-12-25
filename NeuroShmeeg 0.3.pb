@@ -104,7 +104,7 @@ Procedure FixAdOps(Gadget, opName.s)
 EndProcedure
 
 OpenWindowMain() : StickyWindow(#WindowMain, 1)
-SetWindowTitle(#WindowMain, "NeuroShmeeg 0.4."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount))
+SetWindowTitle(#WindowMain, "NS 0.4."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount))
 
 AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Escape, #ExitFromProgramm)
 AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F1, #ButtonRx)
@@ -291,6 +291,7 @@ Repeat
         ;-------------------------------------------------------------
       Case #ComboProvisor
         sessID = Date()
+        SetWindowTitle(#WindowMain, "NS 0.4."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor))
       Case #ButtonAdd
         For x = #EditorCSDescription To #EditorProvisorDescription
           If GetGadgetText(x) = ""
@@ -326,8 +327,9 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 106
-; Folding = AI-
+; CursorPosition = 293
+; FirstLine = 174
+; Folding = AY-
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
