@@ -22,8 +22,8 @@ Procedure FillState(query.s)
     CreateFile(0, dbFile) : CloseFile(0)
     OpenDatabase(0, dbFile, "", "")
     
-    makeDB.s = "CREATE TABLE provisors(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, orgName TEXT, CSNumber INT, CSCategory TEXT, CSAddres TEXT, CSDescription TEXT, "+
-               "provisorName TEXT, provisorTNumber TEXT UNIQUE, provisorSex TEXT, provisorAge INT,  provisorEducation TEXT, provisorCategory INT, provisorDescription TEXT);"+
+    makeDB.s = "CREATE TABLE provisors(orgName TEXT, CSNumber INT, CSCategory TEXT, CSAddres TEXT, CSDescription TEXT, "+
+               "provisorName TEXT, provisorTNumber TEXT, provisorSex TEXT, provisorAge INT,  provisorEducation TEXT, provisorCategory INT, provisorDescription TEXT, PRIMARY KEY (CSNumber, provisorTNumber));"+
                "CREATE TABLE observations (sessid INT, inqnum INT, tos INT, stdabbrev VARCHAR(50), timestamp INT)"
     ;Debug makeDB
     If DatabaseUpdate(0, makeDB) = 0
@@ -284,9 +284,9 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 276
-; FirstLine = 142
-; Folding = Ay
+; CursorPosition = 25
+; FirstLine = 12
+; Folding = By
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
