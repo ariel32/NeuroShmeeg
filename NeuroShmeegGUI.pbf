@@ -1,4 +1,4 @@
-﻿Global Frame0, Frame0, Frame0, Frame0, Frame0, Frame0, Text0, Text0, Text0, Text0, Frame0, Frame0, Frame0, Frame0
+﻿Global Frame0, Text0
 
 Enumeration FormWindow
   #WindowMain
@@ -9,6 +9,7 @@ Enumeration FormGadget
   #ButtonRx
   #ButtonNotRx
   #ButtonIMT
+  #ButtonRxL
   #ListIconQueue
   #b00
   #b01
@@ -22,6 +23,10 @@ Enumeration FormGadget
   #b09
   #b10
   #b11
+  #b12
+  #b13
+  #ButtonRxCopy
+  #ButtonInstructionCopy
   #bExit
   #Button23
   #Button22
@@ -34,7 +39,6 @@ Enumeration FormGadget
   #Button211
   #Button210
   #ComboProvisor
-  #ButtonRxL
   #EditorCSDescription
   #ComboCSCategory
   #ComboOrganisationName
@@ -48,9 +52,6 @@ Enumeration FormGadget
   #StringCSAddres
   #StringProvisorTNumber
   #StringProvisorName
-  #b12
-  #ButtonRxCopy
-  #ButtonInstructionCopy
 EndEnumeration
 
 
@@ -61,9 +62,10 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 540, height = 540)
   ButtonGadget(#ButtonRx, 260, 10, 80, 20, "Рецепт +", #PB_Button_Toggle)
   ButtonGadget(#ButtonNotRx, 340, 10, 80, 20, "Рецепт -", #PB_Button_Toggle)
   ButtonGadget(#ButtonIMT, 430, 10, 80, 20, "ИМТ/ТАА", #PB_Button_Toggle)
+  ButtonGadget(#ButtonRxL, 180, 10, 80, 20, "Рецепт + L", #PB_Button_Toggle)
   ListIconGadget(#ListIconQueue, 10, 40, 160, 280, "#", 50, #PB_ListIcon_FullRowSelect)
   AddGadgetColumn(#ListIconQueue, 1, "ID", 100)
-  ButtonGadget(#b00, 180, 40, 330, 20, "00: Постановка в очередь", #PB_Button_Toggle)
+  ButtonGadget(#b00, 180, 40, 330, 20, "00: Постановка в очередь")
   ButtonGadget(#b01, 180, 60, 330, 20, "01: Обращение к провизору", #PB_Button_Toggle)
   ButtonGadget(#b02, 180, 80, 330, 20, "02: Фарм. экспертиза рецепта", #PB_Button_Toggle)
   ButtonGadget(#b03, 180, 100, 330, 20, "03: Подбор замены", #PB_Button_Toggle)
@@ -75,6 +77,9 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 540, height = 540)
   ButtonGadget(#b09, 180, 220, 330, 20, "09: Оформление гарантии", #PB_Button_Toggle)
   ButtonGadget(#b10, 180, 240, 330, 20, "10: Расчет", #PB_Button_Toggle)
   ButtonGadget(#b11, 180, 260, 330, 20, "11: Оформление оборотной стороны", #PB_Button_Toggle)
+  ButtonGadget(#b12, 180, 280, 165, 20, "12: Таксировка рецепта", #PB_Button_Toggle)
+  ButtonGadget(#ButtonRxCopy, 345, 300, 165, 20, "Снятие копии рецепта", #PB_Button_Toggle)
+  ButtonGadget(#ButtonInstructionCopy, 180, 300, 165, 20, "Снятие копии инструкции", #PB_Button_Toggle)
   ButtonGadget(#bExit, 10, 330, 500, 20, "Ашельме махельме")
   Frame0 = FrameGadget(#PB_Any, 10, 350, 500, 130, "Работы, не связанные с реализацией товаров из аптеки")
   ButtonGadget(#Button23, 260, 370, 240, 20, "Приемка товара")
@@ -88,10 +93,7 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 540, height = 540)
   ButtonGadget(#Button211, 260, 450, 240, 20, "Выявление побочных реакций")
   ButtonGadget(#Button210, 20, 450, 240, 20, "Сан-просветительная работа")
   ComboBoxGadget(#ComboProvisor, 10, 10, 160, 20, #PB_ComboBox_Editable)
-  ButtonGadget(#ButtonRxL, 180, 10, 80, 20, "Рецепт + L", #PB_Button_Toggle)
-  ButtonGadget(#b12, 180, 280, 330, 20, "12: Таксировка рецепта", #PB_Button_Toggle)
-  ButtonGadget(#ButtonRxCopy, 345, 300, 165, 20, "Снятие копии рецепта", #PB_Button_Toggle)
-  ButtonGadget(#ButtonInstructionCopy, 180, 300, 165, 20, "Снятие копии инструкции", #PB_Button_Toggle)
+  ButtonGadget(#b13, 345, 280, 165, 20, "13: Оформление корешка", #PB_Button_Toggle)
   AddGadgetItem(#Panel, -1, "Добавление объектов")
   Frame0 = FrameGadget(#PB_Any, 260, 10, 250, 50, "Категория аптеки")
   Frame0 = FrameGadget(#PB_Any, 10, 60, 240, 50, "Название аптеки")
@@ -105,7 +107,7 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 540, height = 540)
   Frame0 = FrameGadget(#PB_Any, 10, 10, 240, 50, "Название организации")
   Frame0 = FrameGadget(#PB_Any, 10, 110, 240, 50, "Адрес аптеки")
   Frame0 = FrameGadget(#PB_Any, 260, 210, 250, 110, "Характеристика сотрудника")
-  Frame0 = FrameGadget(#PB_Any, 260, 160, 250, 50, "ФИО сотрудника")  
+  Frame0 = FrameGadget(#PB_Any, 260, 160, 250, 50, "ФИО сотрудника")
   EditorGadget(#EditorCSDescription, 270, 80, 230, 70)
   ComboBoxGadget(#ComboCSCategory, 270, 30, 230, 20)
   AddGadgetItem(#ComboCSCategory, -1, "Первой")
@@ -139,14 +141,7 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 139
-; FirstLine = 86
-; Folding = -
-; EnableUnicode
-; EnableXP
-; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 107
-; FirstLine = 89
+; CursorPosition = 19
 ; Folding = -
 ; EnableUnicode
 ; EnableXP

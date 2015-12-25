@@ -8,7 +8,7 @@ EndEnumeration
 UseSQLiteDatabase()
 
 Global dbFile.s = "database.sqlite"
-Global cID = 0
+Global cID.q = 0
 Global cMode = 0
 Global sessID, ts.q
 Global query.s
@@ -45,6 +45,12 @@ Procedure EDnableRxPlus(state.i)
   If(state = -1 ) : state = 1 : Else : state = 0 : EndIf
   DisableGadget(#b02, state) : DisableGadget(#b03, state) : DisableGadget(#b11, state)
   SetGadgetState(#b02, 0) : SetGadgetState(#b03, 0) : SetGadgetState(#b11, 0)
+  SetGadgetState(#ButtonRxCopy, 0)
+EndProcedure
+Procedure EDnableRxL(state.i)
+  If(state = -1 ) : state = 1 : Else : state = 0 : EndIf
+  If (GetGadgetState(#ButtonRx) = 0) : SetGadgetState(#ButtonRx, 1) : EDnableRxPlus(0) : EndIf
+  DisableGadget(#b13, state)
 EndProcedure
 Procedure TogleCommon()
   SetGadgetState(#b04, 0)
@@ -98,18 +104,18 @@ AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F2, #ButtonNotRx)
 AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F3, #ButtonIMT)
 AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Return, #bExit)
 
-For x = #b02 To #b11 : DisableGadget(x, 1) : Next
+For x = #b02 To #ButtonInstructionCopy: DisableGadget(x, 1) : Next
 DisableGadget(#b00, 1)
 GadgetsUpdate()
 FillState("")
 
 ;{ TODO
 ; + сделать так, чтобы при открытии окон автоматически обновлялись гаджеты
-; сделать так, чтобы при выборе провизора или аптеки обновлялась информация о них
 ; + таксирование рецепта
 ; + снятие копии рецепта
 ; + снятие копии рецепта
 ; + ПОВЫСИТЬ ГРАНУЛЯРНОСТЬ!""2221111
+; - сделать так, чтобы при выборе провизора или аптеки обновлялась информация о них
 ;}
 
 
@@ -134,6 +140,7 @@ Repeat
       NextDatabaseRow(0)
       If GetDatabaseString(0, 0) <> "0"
         MessageRequester("", "Для начала работы с системой выберите провизора!", #MB_ICONERROR)
+        SetGadgetState(Gadget, 0)
       Else
         MessageRequester("", "Для начала работы с системой добавьте провизора!", #MB_ICONERROR)
         SetGadgetState(Gadget, 0) : SetGadgetState(#Panel, 1)
@@ -234,14 +241,16 @@ Repeat
         ; -------------------------------------------------------  
       Case #ButtonRx
         If GetGadgetState(#ButtonRx) = 0 : i = -1 : Else : i = 1 : EndIf
+        If GetGadgetState(#ButtonRx) = 0 : SetGadgetState(#ButtonRxL, 0) : EndIf
         cMode = cMode + i
         EDnableRxPlus(i)
       Case  #ButtonRxL
         If GetGadgetState(#ButtonRxL) = 0 : i = -1 : Else : i = 1 : EndIf
-        cMode = cMode + i*15
-        EDnableRxPlus(i)
+        If GetGadgetState(#ButtonRxL) = 1 And GetGadgetState(#ButtonRx) = 0 : subMode = 1 : Else : subMode = 0 : EndIf
+        If GetGadgetState(#ButtonRxL) = 1 : SetGadgetState(#ButtonRx, 1) : EndIf        
+        cMode = cMode + i*15 + subMode
+        EDnableRxL(i)
       Case #ButtonNotRx
-        Debug 2
         If GetGadgetState(#ButtonNotRx) = 0 : i = -1 : Else : i = 1 : EndIf
         cMode = cMode + i*2
       Case #ButtonIMT
@@ -277,6 +286,9 @@ Repeat
           SetGadgetText(#ComboProvisorCategory, "")  : SetGadgetText(#EditorProvisorDescription, "")
         EndIf
     EndSelect
+    
+  If cMode = 0 : For x = #b02 To #ButtonInstructionCopy: DisableGadget(x, 1) : Next : EndIf  
+    
   EndIf
   
   If CountGadgetItems(#ListIconQueue) = 0 : DisableGadget(#b00, 1) : Else : DisableGadget(#b00, 0) : EndIf
@@ -284,9 +296,9 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 25
-; FirstLine = 12
-; Folding = By
+; CursorPosition = 180
+; FirstLine = 45
+; Folding = Ak
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
