@@ -5,14 +5,15 @@ Enumeration MyCONST
 EndEnumeration
 
 
-
+UseSQLiteDatabase()
 
 Global dbFile.s = "database.sqlite"
 Global cID = 0
 Global cMode = 0
-Global sessID, ts
+Global sessID, ts.q
 Global query.s
-UseSQLiteDatabase()
+
+sET = ElapsedMilliseconds()
 
 Procedure FillState(query.s)
   If FileSize(dbFile) > 0
@@ -22,7 +23,7 @@ Procedure FillState(query.s)
     OpenDatabase(0, dbFile, "", "")
     
     makeDB.s = "CREATE TABLE provisors(id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, orgName TEXT, CSNumber INT, CSCategory TEXT, CSAddres TEXT, CSDescription TEXT, "+
-               "provisorName TEXT, provisorTNumber TEXT, provisorSex TEXT, provisorAge INT,  provisorEducation TEXT, provisorCategory INT, provisorDescription TEXT);"+
+               "provisorName TEXT, provisorTNumber TEXT UNIQUE, provisorSex TEXT, provisorAge INT,  provisorEducation TEXT, provisorCategory INT, provisorDescription TEXT);"+
                "CREATE TABLE observations (sessid INT, inqnum INT, tos INT, stdabbrev VARCHAR(50), timestamp INT)"
     ;Debug makeDB
     If DatabaseUpdate(0, makeDB) = 0
@@ -108,10 +109,8 @@ FillState("")
 ; + таксирование рецепта
 ; + снятие копии рецепта
 ; + снятие копии рецепта
-; ПОВЫСИТЬ ГРАНУЛЯРНОСТЬ!""2221111
+; + ПОВЫСИТЬ ГРАНУЛЯРНОСТЬ!""2221111
 ;}
-
-
 
 
 
@@ -155,13 +154,13 @@ Repeat
     
     Select Gadget
       Case #b00 ; постановка в очередь
-        ts = Date()
+        ts = Date()*1000+ElapsedMilliseconds()-sET
         AddGadgetItem(#ListIconQueue, -1, Str(CountGadgetItems(#ListIconQueue)+1)+Chr(10)+Str(ts))
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1))
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'inq', '"+Str(ts)+"')"
         FillState(query)
       Case #b01 ; поступил на обслуживание
-        ts = Date()
+        ts = Date()*1000+ElapsedMilliseconds()-sET
         If CountGadgetItems(#ListIconQueue) = 0
           AddGadgetItem(#ListIconQueue, -1, Str(CountGadgetItems(#ListIconQueue)+1)+Chr(10)+Str(ts))
         EndIf
@@ -253,7 +252,6 @@ Repeat
         ;-------------------------------------------------------------
       Case #ComboProvisor
         sessID = Date()
-        Debug sessID
       Case #ButtonAdd
         For x = #EditorCSDescription To #EditorProvisorDescription
           If GetGadgetText(x) = ""
@@ -269,8 +267,14 @@ Repeat
                     " VALUES ('"+GetGadgetText(#ComboOrganisationName)+"', '"+GetGadgetText(#ComboCSName)+"', '"+GetGadgetText(#ComboCSCategory)+"', "+
                     "'"+GetGadgetText(#StringCSAddres)+"', '"+GetGadgetText(#EditorCSDescription)+"','"+GetGadgetText(#StringProvisorName)+"',"+
                     "'"+GetGadgetText(#StringProvisorTNumber)+"', '"+GetGadgetText(#ComboProvisorSex)+"', '"+GetGadgetText(#StringProvisorAge)+"', '"+GetGadgetText(#ComboProvisorEducation)+"', '"+GetGadgetText(#ComboProvisorCategory)+"', '"+GetGadgetText(#EditorProvisorDescription)+"')"
-          FillState(query) : Debug query
-          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; очистить все гаджеты
+          FillState(query)
+          Debug query
+          SetGadgetText(#ComboOrganisationName, "")  : SetGadgetText(#ComboCSName, "")
+          SetGadgetText(#ComboCSCategory, "")        : SetGadgetText(#StringCSAddres, "")
+          SetGadgetText(#EditorCSDescription, "")    : SetGadgetText(#StringProvisorName, "")
+          SetGadgetText(#StringProvisorTNumber, "")  : SetGadgetText(#ComboProvisorSex, "")
+          SetGadgetText(#StringProvisorAge, "")      : SetGadgetText(#ComboProvisorEducation, "")
+          SetGadgetText(#ComboProvisorCategory, "")  : SetGadgetText(#EditorProvisorDescription, "")
         EndIf
     EndSelect
   EndIf
@@ -280,8 +284,8 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 107
-; FirstLine = 24
+; CursorPosition = 276
+; FirstLine = 142
 ; Folding = Ay
 ; EnableUnicode
 ; EnableXP
