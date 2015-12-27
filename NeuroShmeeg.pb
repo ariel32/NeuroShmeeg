@@ -165,7 +165,7 @@ Repeat
       EndIf
     EndIf
     ;}
-    Debug GetGadgetText(Gadget)
+
     Select Gadget
       Case #b00 ; постановка в очередь
         ts = Date()*1000+ElapsedMilliseconds()-sET
@@ -330,9 +330,9 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 322
-; FirstLine = 277
-; Folding = ---
+; CursorPosition = 319
+; FirstLine = 254
+; Folding = -P-
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
