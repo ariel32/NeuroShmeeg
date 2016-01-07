@@ -27,7 +27,7 @@ Procedure FillState(query.s)
     OpenDatabase(0, dbFile, "", "")
     
     makeDB.s = "CREATE TABLE provisors(orgName TEXT, CSNumber INT, CSCategory TEXT, CSAddres TEXT, CSDescription TEXT, "+
-               "provisorName TEXT, provisorTNumber TEXT, provisorSex TEXT, provisorAge INT,  provisorEducation TEXT, provisorCategory INT, provisorDescription TEXT, PRIMARY KEY (CSNumber, provisorTNumber));"+
+               "provisorName TEXT, provisorTNumber TEXT, provisorSex TEXT, provisorAge INT,  provisorEducation TEXT, provisorCategory INT, provisorDescription TEXT, provisorExpCont INT, provisorExpGeneral INT, PRIMARY KEY (CSNumber, provisorTNumber));"+
                "CREATE TABLE observations (sessid INT, inqnum INT, tos INT, stdabbrev VARCHAR(50), visitorCategory VARCHAR(50), timestamp INT)"
     ;Debug makeDB
     If DatabaseUpdate(0, makeDB) = 0
@@ -48,7 +48,7 @@ EndProcedure
 Procedure EDnableRxPlus(state.i)
   If(state = -1 ) : state = 1 : Else : state = 0 : EndIf
   For x = #b02 To #b07 : DisableGadget(x, state) : SetGadgetState(x, 0) : Next
-  For x = #b11 To #ButtonInstructionCopy : DisableGadget(x, state) : SetGadgetState(x, 0) : Next
+  For x = #b11 To #b14: DisableGadget(x, state) : SetGadgetState(x, 0) : Next
   If (GetGadgetState(#ButtonRxL) <> 1) : DisableGadget(#b13, 1) : SetGadgetState(#b13, 0) : EndIf
 EndProcedure
 Procedure EDnableRxL(state.i)
@@ -80,11 +80,19 @@ Procedure EndMaintaince()
 EndProcedure
 Procedure GadgetsUpdate()
   If OpenDatabase(0, dbFile, "", "")
-    If DatabaseQuery(0, "SELECT orgName, provisorName FROM provisors")
-      ClearGadgetItems(#ComboCSName) : ClearGadgetItems(#ComboOrganisationName) : ClearGadgetItems(#ComboProvisor)
+    If DatabaseQuery(0, "SELECT DISTINCT(orgName) FROM provisors")
+      ClearGadgetItems(#ComboOrganisationName)
       While NextDatabaseRow(0)
         AddGadgetItem(#ComboOrganisationName, -1, GetDatabaseString(0, 0))
-        AddGadgetItem(#ComboProvisor, -1, GetDatabaseString(0, 1))
+      Wend
+      FinishDatabaseQuery(0)
+    EndIf
+    If DatabaseQuery(0, "SELECT provisorName, CSNumber, provisorTNumber FROM provisors")
+      ClearGadgetItems(#ComboProvisor) : ClearGadgetItems(#ComboCSName): ClearGadgetItems(#ComboProvisorTNumber)
+      While NextDatabaseRow(0)
+        AddGadgetItem(#ComboProvisor, -1, GetDatabaseString(0, 0))
+        AddGadgetItem(#ComboCSName, -1, GetDatabaseString(0,1))
+        AddGadgetItem(#ComboProvisorTNumber, -1, GetDatabaseString(0,2))
       Wend
       FinishDatabaseQuery(0)
     EndIf
@@ -92,10 +100,6 @@ Procedure GadgetsUpdate()
   Else
     Debug "Can't open database !"
   EndIf
-  
-  ;   #ComboCSName
-  ;   #ComboOrganisationName
-  ;   #ComboProvisor
 EndProcedure
 Procedure FixAdOps(Gadget, opName.s)
   mode.s
@@ -130,7 +134,7 @@ AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F2, #ButtonNotRx)
 AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F3, #ButtonIMT)
 AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Return, #bExit)
 
-For x = #b02 To #ButtonInstructionCopy: DisableGadget(x, 1) : Next
+For x = #b02 To #b14: DisableGadget(x, 1) : Next
 DisableGadget(#b00, 1)
 GadgetsUpdate()
 FillState("")
@@ -160,7 +164,7 @@ Repeat
   If (Event = #PB_Event_Gadget And (Type = #PB_EventType_LeftClick Or Type = #PB_EventType_RightClick Or Type = #PB_EventType_Change)) Or Event = #PB_Event_Menu
     If Menu = #ExitFromProgramm : End : EndIf
     ;{ заставляем ввести провизора при отстуствии такового в #ComboProvisor
-    If GetGadgetText(#ComboProvisor) = "" And GetGadgetState(#Panel) = 0; And Gadget <> #Panel
+    If GetGadgetText(#ComboProvisor) = "" And GetGadgetState(#Panel) = 0 And Type = #PB_EventType_LeftClick; And Gadget <> #Panel
       OpenDatabase(0, dbFile, "", "")
       DatabaseQuery(0, "SELECT COUNT(value) FROM employeesDescription")
       NextDatabaseRow(0)
@@ -190,6 +194,63 @@ Repeat
         If Type = #PB_EventType_RightClick And CountGadgetItems(#ListIconQueue) > 0 And GetGadgetState(#ListIconQueue) <> -1
           DisplayPopupMenu(#PopupMenu, WindowID(#WindowMain))
         EndIf
+      Case #ComboOrganisationName, #ComboCSName, #ComboProvisorTNumber
+        ;{ autofilling gadgets in panel01
+        If Gadget = #ComboOrganisationName; And Type = #PB_EventType_LeftClick
+          query = "SELECT DISTINCT(CSNumber) FROM provisors WHERE orgName = '"+GetGadgetText(Gadget)+"'"
+          If OpenDatabase(0, dbFile, "", "")
+            If DatabaseQuery(0, query)
+              ;ClearGadgetItems(Gadget)
+              While NextDatabaseRow(0)
+                Debug GetDatabaseString(0, 0)
+;                AddGadgetItem(#ComboOrganisationName, -1, GetDatabaseString(0, 0))
+              Wend
+              FinishDatabaseQuery(0)
+            EndIf
+            CloseDatabase(0)
+          Else
+            Debug "Can't open database !"
+          EndIf
+        EndIf
+        If Gadget = #ComboCSName
+          query = "SELECT CSCategory, CSAddres, CSDescription FROM provisors WHERE CSNumber = '"+GetGadgetText(Gadget)+"'"
+          If OpenDatabase(0, dbFile, "", "")
+            If DatabaseQuery(0, query)
+              While NextDatabaseRow(0)
+                 SetGadgetText(#ComboCSCategory, GetDatabaseString(0, 0))
+                 SetGadgetText(#StringCSAddres, GetDatabaseString(0, 1))
+                 SetGadgetText(#EditorCSDescription, GetDatabaseString(0, 2))
+              Wend
+              FinishDatabaseQuery(0)
+            EndIf
+            CloseDatabase(0)
+          Else
+            Debug "Can't open database !"
+          EndIf
+        EndIf
+        ; provisorSex TEXT, provisorAge INT,  provisorEducation TEXT, provisorCategory INT, provisorDescription TEXT, provisorExpCont INT, provisorExpGeneral INT
+        If Gadget = #ComboProvisorTNumber
+          query = "SELECT provisorName, provisorSex, provisorAge,  provisorEducation, provisorCategory, provisorDescription, provisorExpCont, provisorExpGeneral FROM provisors WHERE provisorTNumber = '"+GetGadgetText(Gadget)+"'"
+          If OpenDatabase(0, dbFile, "", "")
+            If DatabaseQuery(0, query)
+              While NextDatabaseRow(0)
+                 SetGadgetText(#StringProvisorName, GetDatabaseString(0, 0))
+                 SetGadgetText(#ComboProvisorSex, GetDatabaseString(0, 1))
+                 SetGadgetText(#StringProvisorAge, GetDatabaseString(0, 2))
+                 SetGadgetText(#ComboProvisorEducation, GetDatabaseString(0, 3))
+                 SetGadgetText(#ComboProvisorCategory, GetDatabaseString(0, 4))
+                 SetGadgetText(#EditorProvisorDescription, GetDatabaseString(0, 5))
+                 SetGadgetText(#StringProvisorExpCont, GetDatabaseString(0, 6))
+                 SetGadgetText(#StringProvisorExpGeneral, GetDatabaseString(0, 7))
+              Wend
+              FinishDatabaseQuery(0)
+            EndIf
+            CloseDatabase(0)
+          Else
+            Debug "Can't open database !"
+          EndIf
+        EndIf        
+;}
       Case #MenuA : SetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), "A", 2)
       Case #MenuE : SetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), "E", 2)
       Case #MenuY : SetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), "Y", 2)
@@ -249,7 +310,12 @@ Repeat
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'gar', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
-      Case #b10
+      Case #b11
+        ts = Date()*1000
+        cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
+        query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'bsd', '"+vCategory+"','"+Str(ts)+"')"
+        FillState(query)
+      Case #b18
         If MessageRequester("Буэээ","Расчет осуществлен при помощи наличных денеждных значков?", #MB_YESNO | #MB_ICONQUESTION) = #PB_MessageRequester_Ok
           ts = Date()*1000
           cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
@@ -261,11 +327,8 @@ Repeat
           query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'pcr', '"+vCategory+"','"+Str(ts)+"')"
           FillState(query)
         EndIf
-      Case #b11
-        ts = Date()*1000
-        cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
-        query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'bsd', '"+vCategory+"','"+Str(ts)+"')"
-        FillState(query)
+      Case #b19
+      Case #b20
       Case #bExit
         ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
@@ -274,33 +337,31 @@ Repeat
         EndMaintaince()        
         SetGadgetState(#b01, 0)
         ;--------------------------------------------------------
-      Case #bops01
-        FixAdOps(Gadget, "tinf") ; #bops01 "Информирование по телефону"
-      Case #bops02
-        FixAdOps(Gadget, "qcon") ; #bops02 "Контроль качества"
-      Case #bops03
-        FixAdOps(Gadget, "vitf") ; #bops03 "Оформление витрин"
-      Case #bops04
-        FixAdOps(Gadget, "docf") ; #bops04 "Ведение учета и отчетности"
-      Case #bops05
-        FixAdOps(Gadget, "sang") ; #bops05 "Сан-просветительная работа"
-      Case #bops06
-        FixAdOps(Gadget, "cmdt") ; #bops06 "Приемка товара"
-      Case #bops07
-        FixAdOps(Gadget, "ctrn") ; #bops07 "Пополнение отделов аптеки"
-      Case #bops08
-        FixAdOps(Gadget, "expd") ; #bops08 "Контроль сроков годности"
-      Case #bops09
-        FixAdOps(Gadget, "clms") ; #bops09 "Работа с замечаниями"
-      Case #bops10
-        FixAdOps(Gadget, "sedt") ; #bops10 "Выявление побочных реакций"
+      Case #bops01 : FixAdOps(Gadget, "b01")
+      Case #bops02 : FixAdOps(Gadget, "b02")
+      Case #bops03 : FixAdOps(Gadget, "b03")
+      Case #bops04 : FixAdOps(Gadget, "b04")
+      Case #bops05 : FixAdOps(Gadget, "b05")
+      Case #bops06 : FixAdOps(Gadget, "b06")
+      Case #bops07 : FixAdOps(Gadget, "b07")
+      Case #bops08 : FixAdOps(Gadget, "b08")
+      Case #bops09 : FixAdOps(Gadget, "b09")
+      Case #bops10 : FixAdOps(Gadget, "b10")
+      Case #bops11 : FixAdOps(Gadget, "b11")
+      Case #bops12 : FixAdOps(Gadget, "b12")
+      Case #bops13 : FixAdOps(Gadget, "b13")
+      Case #bops14 : FixAdOps(Gadget, "b14")
+      Case #bops15 : FixAdOps(Gadget, "b15")
+      Case #bops16 : FixAdOps(Gadget, "b16")
         ; -------------------------------------------------------  
       Case #ButtonRx
         If GetGadgetState(#ButtonRx) = 0 : i = -1 : Else : i = 1 : EndIf
         If GetGadgetState(#ButtonRx) = 0 : SetGadgetState(#ButtonRxL, 0) : EndIf
         cMode = cMode + i
         EDnableRxPlus(i)
-      Case  #ButtonRxL
+      Case #ButtonRx2
+      Case #ButtonRx3
+      Case #ButtonRxL
         If GetGadgetState(#ButtonRxL) = 0 : i = -1 : Else : i = 1 : EndIf
         If GetGadgetState(#ButtonRxL) = 1 And GetGadgetState(#ButtonRx) = 0 : subMode = 1 : Else : subMode = 0 : EndIf
         If GetGadgetState(#ButtonRxL) = 1 : SetGadgetState(#ButtonRx, 1) : EndIf        
@@ -308,7 +369,7 @@ Repeat
         EDnableRxL(i)
       Case #ButtonNotRx
         If GetGadgetState(#ButtonNotRx) = 0 : i = -1 : Else : i = 1 : EndIf
-        DisableGadget(#ButtonInstructionCopy, 0)
+        DisableGadget(#b14, 0)
         cMode = cMode + i*2
       Case #ButtonIMT
         Debug 3
@@ -330,25 +391,27 @@ Repeat
           EndIf
         Next
         If isAllFieldFilled
-          query.s = "INSERT INTO provisors (orgName, CSNumber, CSCategory, CSAddres, CSDescription, provisorName, provisorTNumber, provisorSex, provisorAge, provisorEducation, provisorCategory, provisorDescription)"+
+          query.s = "INSERT INTO provisors (orgName, CSNumber, CSCategory, CSAddres, CSDescription, provisorName, provisorTNumber, provisorSex, provisorAge, provisorEducation, provisorCategory, provisorDescription, provisorExpCont, provisorExpGeneral)"+
                     " VALUES ('"+GetGadgetText(#ComboOrganisationName)+"', '"+GetGadgetText(#ComboCSName)+"', '"+GetGadgetText(#ComboCSCategory)+"', "+
                     "'"+GetGadgetText(#StringCSAddres)+"', '"+GetGadgetText(#EditorCSDescription)+"','"+GetGadgetText(#StringProvisorName)+"',"+
-                    "'"+GetGadgetText(#StringProvisorTNumber)+"', '"+GetGadgetText(#ComboProvisorSex)+"', '"+GetGadgetText(#StringProvisorAge)+"', '"+GetGadgetText(#ComboProvisorEducation)+"', '"+GetGadgetText(#ComboProvisorCategory)+"', '"+GetGadgetText(#EditorProvisorDescription)+"')"
+                    "'"+GetGadgetText(#ComboProvisorTNumber)+"', '"+GetGadgetText(#ComboProvisorSex)+"', '"+GetGadgetText(#StringProvisorAge)+"', '"+GetGadgetText(#ComboProvisorEducation)+"', '"+GetGadgetText(#ComboProvisorCategory)+"', '"+GetGadgetText(#EditorProvisorDescription)+"', '"+GetGadgetText(#StringProvisorExpCont)+"', '"+GetGadgetText(#StringProvisorExpGeneral)+"')"
           FillState(query)
           Debug query
           SetGadgetText(#ComboOrganisationName, "")  : SetGadgetText(#ComboCSName, "")
           SetGadgetText(#ComboCSCategory, "")        : SetGadgetText(#StringCSAddres, "")
           SetGadgetText(#EditorCSDescription, "")    : SetGadgetText(#StringProvisorName, "")
-          SetGadgetText(#StringProvisorTNumber, "")  : SetGadgetText(#ComboProvisorSex, "")
+          SetGadgetText(#ComboProvisorTNumber, "")  : SetGadgetText(#ComboProvisorSex, "")
           SetGadgetText(#StringProvisorAge, "")      : SetGadgetText(#ComboProvisorEducation, "")
           SetGadgetText(#ComboProvisorCategory, "")  : SetGadgetText(#EditorProvisorDescription, "")
+          SetGadgetText(#StringProvisorExpCont, "")  : SetGadgetText(#StringProvisorExpGeneral, "")
         EndIf
+        GadgetsUpdate()
     EndSelect
-    
-    If cMode = 0 : For x = #b02 To #ButtonInstructionCopy: DisableGadget(x, 1) : Next : EndIf  
+
+    If cMode = 0 : For x = #b02 To #b14: DisableGadget(x, 1) : Next : EndIf  
     If GetGadgetState(#ButtonRx) : EDnableRxPlus(1) : EndIf
     If GetGadgetState(#buttonRx) = 0 And GetGadgetState(#buttonNotRX) = 0 And GetGadgetState(#buttonRxL) = 0 And GetGadgetState(#buttonIMT) = 0
-      For x = #b02 To #buttonRxCopy : DisableGadget(x, 1) : SetGadgetState(x, 0) : Next
+      For x = #b02 To #b15: DisableGadget(x, 1) : SetGadgetState(x, 0) : Next
     EndIf
   EndIf
   
@@ -357,9 +420,9 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 75
-; FirstLine = 16
-; Folding = AB-
+; CursorPosition = 255
+; FirstLine = 98
+; Folding = BI+
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
