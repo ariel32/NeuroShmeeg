@@ -42,8 +42,9 @@ EndProcedure
 Procedure EDnableIMT(state.i)
   If(state = -1 ) : state = 1 : Else : state = 0 : EndIf
   state = state * (-1)
-  DisableGadget(#b08, state) : DisableGadget(#b09, state)
-  SetGadgetState(#b08, 0) : SetGadgetState(#b09, 0)
+  DisableGadget(#b10, state) : SetGadgetState(#b10, 0)
+  DisableGadget(#b11, state) : SetGadgetState(#b11, 0)
+  DisableGadget(#b12, state) : SetGadgetState(#b12, 0)
 EndProcedure
 Procedure EDnableRxPlus(state.i)
   If(state = -1 ) : state = 1 : Else : state = 0 : EndIf
@@ -58,16 +59,20 @@ EndProcedure
 Procedure TogleCommon()
   SetGadgetState(#b04, 0)
   SetGadgetState(#b05, 0)
-  SetGadgetState(#b06, 0)
-  SetGadgetState(#b07, 0)
-  SetGadgetState(#b10, 0)
+  SetGadgetState(#b06, 0)  
+  SetGadgetState(#b13, 0)  
+  SetGadgetState(#b16, 0)  
+  SetGadgetState(#b17, 0)  
+  SetGadgetState(#b18, 0)  
 EndProcedure
 Procedure EDnableCommon(state.i)
   DisableGadget(#b04, state) ;: SetGadgetState(#b04, 0)
   DisableGadget(#b05, state) ;: SetGadgetState(#b05, 0)
   DisableGadget(#b06, state) ;: SetGadgetState(#b06, 0)
-  DisableGadget(#b07, state) ;: SetGadgetState(#b07, 0)
-  DisableGadget(#b10, state) ;: SetGadgetState(#b10, 0)  
+  DisableGadget(#b13, state) ;: SetGadgetState(#b10, 0)  
+  DisableGadget(#b16, state) ;: SetGadgetState(#b10, 0)  
+  DisableGadget(#b17, state) ;: SetGadgetState(#b10, 0)  
+  DisableGadget(#b18, state) ;: SetGadgetState(#b10, 0)  
   If(state = 1) : TogleCommon() : EndIf    
 EndProcedure
 Procedure EndMaintaince()
@@ -134,7 +139,7 @@ AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F2, #ButtonNotRx)
 AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F3, #ButtonIMT)
 AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Return, #bExit)
 
-For x = #b02 To #b14: DisableGadget(x, 1) : Next
+For x = #b02 To #b20: DisableGadget(x, 1) : Next
 DisableGadget(#b00, 1)
 GadgetsUpdate()
 FillState("")
@@ -147,10 +152,6 @@ FillState("")
 ; + ПОВЫСИТЬ ГРАНУЛЯРНОСТЬ!""2221111
 ; - сделать так, чтобы при выборе провизора или аптеки обновлялась информация о них
 ;}
-
-
-
-
 
 Repeat
   Event=WaitWindowEvent()
@@ -316,7 +317,7 @@ Repeat
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'bsd', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b18
-        If MessageRequester("Буэээ","Расчет осуществлен при помощи наличных денеждных значков?", #MB_YESNO | #MB_ICONQUESTION) = #PB_MessageRequester_Ok
+        If MessageRequester("---","Расчет осуществлен при помощи наличных денеждных значков?", #MB_YESNO | #MB_ICONQUESTION) = #PB_MessageRequester_Ok
           ts = Date()*1000
           cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
           query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'pcs', '"+vCategory+"','"+Str(ts)+"')"
@@ -356,25 +357,30 @@ Repeat
         ; -------------------------------------------------------  
       Case #ButtonRx
         If GetGadgetState(#ButtonRx) = 0 : i = -1 : Else : i = 1 : EndIf
-        If GetGadgetState(#ButtonRx) = 0 : SetGadgetState(#ButtonRxL, 0) : EndIf
+        ;If GetGadgetState(#ButtonRx) = 0 : SetGadgetState(#ButtonRxL, 0) : EndIf
         cMode = cMode + i
         EDnableRxPlus(i)
       Case #ButtonRx2
+        If GetGadgetState(#ButtonRx2) = 0 : i = -1 : Else : i = 1 : EndIf       
+        cMode = cMode + i*2
+        EDnableRxPlus(i)        
       Case #ButtonRx3
+        If GetGadgetState(#ButtonRx3) = 0 : i = -1 : Else : i = 1 : EndIf
+        cMode = cMode + i*4
+        EDnableRxPlus(i)        
       Case #ButtonRxL
         If GetGadgetState(#ButtonRxL) = 0 : i = -1 : Else : i = 1 : EndIf
-        If GetGadgetState(#ButtonRxL) = 1 And GetGadgetState(#ButtonRx) = 0 : subMode = 1 : Else : subMode = 0 : EndIf
-        If GetGadgetState(#ButtonRxL) = 1 : SetGadgetState(#ButtonRx, 1) : EndIf        
-        cMode = cMode + i*15 + subMode
+        ;If GetGadgetState(#ButtonRxL) = 1 And GetGadgetState(#ButtonRx) = 0 : subMode = 1 : Else : subMode = 0 : EndIf
+        ;If GetGadgetState(#ButtonRxL) = 1 : SetGadgetState(#ButtonRx, 1) : EndIf        
+        cMode = cMode + i*8
         EDnableRxL(i)
       Case #ButtonNotRx
         If GetGadgetState(#ButtonNotRx) = 0 : i = -1 : Else : i = 1 : EndIf
         DisableGadget(#b14, 0)
-        cMode = cMode + i*2
+        cMode = cMode + i*16
       Case #ButtonIMT
-        Debug 3
         If GetGadgetState(#ButtonIMT) = 0 : i = -1 : Else : i = 1 : EndIf
-        cMode = cMode + i*4
+        cMode = cMode + i*32
         EDnableIMT(i)
         ;-------------------------------------------------------------
       Case #ComboProvisor
@@ -420,9 +426,9 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 255
-; FirstLine = 98
-; Folding = BI+
+; CursorPosition = 50
+; FirstLine = 6
+; Folding = 9I+
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
