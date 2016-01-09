@@ -48,10 +48,16 @@ Procedure EDnableIMT(state.i)
 EndProcedure
 Procedure EDnableRx(state.i)
   If(state = -1) : state = 1 : Else : state = 0 : EndIf
-  DisableGadget(#b02, state) : SetGadgetState(#b02, 0)
-  DisableGadget(#b04, state) : SetGadgetState(#b04, 0)
-  DisableGadget(#b07, state) : SetGadgetState(#b07, 0)
-  For x = #b13 To #b20: DisableGadget(x, state) : SetGadgetState(x, 0) : Next
+  If (state = 1)
+    SetGadgetState(#b02, 0)
+    SetGadgetState(#b04, 0)
+    SetGadgetState(#b07, 0)
+    For x = #b13 To #b20: SetGadgetState(x, 0) : Next
+  EndIf
+  DisableGadget(#b02, state)
+  DisableGadget(#b04, state)
+  DisableGadget(#b07, state)
+  For x = #b13 To #b20: DisableGadget(x, state) : Next
   If (GetGadgetState(#ButtonRx) = 1) : DisableGadget(#b15, 0) : Else : DisableGadget(#b15, 1) : EndIf
   If (GetGadgetState(#ButtonRx) = 1 Or GetGadgetState(#ButtonRx2) = 1 Or GetGadgetState(#ButtonRx3) = 1 Or GetGadgetState(#ButtonRxL) = 1)
     DisableGadget(#b02, 0)
@@ -74,11 +80,9 @@ Procedure TogleCommon()
   SetGadgetState(#b05, 0)
   SetGadgetState(#b06, 0)  
   SetGadgetState(#b13, 0)  
-  SetGadgetState(#b16, 0)  
-  SetGadgetState(#b17, 0)  
-  SetGadgetState(#b18, 0)  
-  SetGadgetState(#b19, 0)  
-  SetGadgetState(#b20, 0)  
+  SetGadgetState(#b16, 0)
+  SetGadgetState(#b17, 0)
+  SetGadgetState(#b18, 0)
 EndProcedure
 Procedure EDnableCommon(state.i)
   DisableGadget(#b04, state) ;: SetGadgetState(#b04, 0)
@@ -88,8 +92,6 @@ Procedure EDnableCommon(state.i)
   DisableGadget(#b16, state) ;: SetGadgetState(#b10, 0)  
   DisableGadget(#b17, state) ;: SetGadgetState(#b10, 0)  
   DisableGadget(#b18, state) ;: SetGadgetState(#b10, 0)  
-;   DisableGadget(#b19, state) ;: SetGadgetState(#b10, 0)  
-;   DisableGadget(#b20, state) ;: SetGadgetState(#b10, 0)  
   If(state = 1) : TogleCommon() : EndIf    
 EndProcedure
 Procedure EndMaintaince()
@@ -494,8 +496,8 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 14
-; Folding = kI+
+; CursorPosition = 61
+; Folding = 1I+
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
