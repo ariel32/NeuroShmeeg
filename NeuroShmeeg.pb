@@ -12,7 +12,7 @@ EndEnumeration
 
 UseSQLiteDatabase()
 
-Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.5"
+Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.6"
 Global cID.q = 0
 Global cMode = 0
 Global sessID, ts.q
@@ -48,19 +48,26 @@ Procedure EDnableIMT(state.i)
 EndProcedure
 Procedure EDnableRx(state.i)
   If(state = -1) : state = 1 : Else : state = 0 : EndIf
-  Debug state
   DisableGadget(#b02, state) : SetGadgetState(#b02, 0)
   DisableGadget(#b04, state) : SetGadgetState(#b04, 0)
   DisableGadget(#b07, state) : SetGadgetState(#b07, 0)
   For x = #b13 To #b20: DisableGadget(x, state) : SetGadgetState(x, 0) : Next
   If (GetGadgetState(#ButtonRx) = 1) : DisableGadget(#b15, 0) : Else : DisableGadget(#b15, 1) : EndIf
+  If (GetGadgetState(#ButtonRx) = 1 Or GetGadgetState(#ButtonRx2) = 1 Or GetGadgetState(#ButtonRx3) = 1 Or GetGadgetState(#ButtonRxL) = 1)
+    DisableGadget(#b02, 0)
+    DisableGadget(#b07, 0)
+    DisableGadget(#b14, 0)
+    DisableGadget(#b19, 0)
+    DisableGadget(#b20, 0)
+  EndIf
+  If GetGadgetState(#ButtonNotRx) = 1 : DisableGadget(#b14, 0) : EndIf
 EndProcedure
 Procedure EDnableRxL(state.i)
-  EDnableRx(state)
   If(state = -1 ) : state = 1 : Else : state = 0 : EndIf
   DisableGadget(#b03, state) ;: SetGadgetState(#b04, 0)
   DisableGadget(#b08, state) ;: SetGadgetState(#b05, 0)
   DisableGadget(#b09, state) ;: SetGadgetState(#b06, 0)
+  EDnableRx(state)
 EndProcedure
 Procedure TogleCommon()
   SetGadgetState(#b04, 0)
@@ -81,8 +88,8 @@ Procedure EDnableCommon(state.i)
   DisableGadget(#b16, state) ;: SetGadgetState(#b10, 0)  
   DisableGadget(#b17, state) ;: SetGadgetState(#b10, 0)  
   DisableGadget(#b18, state) ;: SetGadgetState(#b10, 0)  
-  DisableGadget(#b19, state) ;: SetGadgetState(#b10, 0)  
-  DisableGadget(#b20, state) ;: SetGadgetState(#b10, 0)  
+;   DisableGadget(#b19, state) ;: SetGadgetState(#b10, 0)  
+;   DisableGadget(#b20, state) ;: SetGadgetState(#b10, 0)  
   If(state = 1) : TogleCommon() : EndIf    
 EndProcedure
 Procedure EndMaintaince()
@@ -419,6 +426,7 @@ Repeat
       Case #ButtonRx
         If GetGadgetState(#ButtonRx) = 0 : i = -1 : Else : i = 1 : EndIf
         ;If GetGadgetState(#ButtonRx) = 0 : SetGadgetState(#ButtonRxL, 0) : EndIf
+        Debug 111111111111
         cMode = cMode + i
         EDnableRx(i)
       Case #ButtonRx2
@@ -436,6 +444,8 @@ Repeat
       Case #ButtonNotRx
         If GetGadgetState(#ButtonNotRx) = 0 : i = -1 : Else : i = 1 : EndIf
         cMode = cMode + i*16
+        EDnableCommon(i)
+        If(state = -1) : DisableGadget(#b14, 1) : Else : DisableGadget(#b14, 0) : EndIf
       Case #ButtonIMT
         If GetGadgetState(#ButtonIMT) = 0 : i = -1 : Else : i = 1 : EndIf
         cMode = cMode + i*32
@@ -484,9 +494,8 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 428
-; FirstLine = 214
-; Folding = AI+
+; CursorPosition = 14
+; Folding = kI+
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
