@@ -12,7 +12,7 @@ EndEnumeration
 
 UseSQLiteDatabase()
 
-Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.6"
+Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.7"
 Global cID.q = 0
 Global cMode = 0
 Global sessID, ts.q
@@ -173,7 +173,6 @@ DisableGadget(#b00, 1)
 GadgetsUpdate()
 FillState("")
 
-
 Repeat
   Event=WaitWindowEvent()
   Gadget=EventGadget()
@@ -186,6 +185,17 @@ Repeat
     addks()
   ElseIf Gadget = #Panel And Type = #PB_EventType_Change And GetGadgetState(#Panel) <> 0
     RemoveKeyboardShortcut(#WindowMain, #PB_Shortcut_All)
+  EndIf
+  
+  ; колдунство с упрощенным интерфейсом
+  If Gadget = #Panel And Type = #PB_EventType_Change And GetGadgetState(#Panel) = 4 And GetGadgetItemText(#Panel, 4) = "EasyGUI"
+    SetGadgetItemText(#Panel, 4, "FullGUI")
+    For x = #b01 To #bExit : HideGadget(x, 1) : Next
+    SetGadgetState(#Panel, 0)
+    
+  ElseIf Gadget = #Panel And Type = #PB_EventType_Change And GetGadgetState(#Panel) = 4 And GetGadgetItemText(#Panel, 4) = "FullGUI"
+    OpenWindowMain()
+    SetGadgetItemText(#Panel, 4, "EasyGUI")
   EndIf
   
   
@@ -496,8 +506,7 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 37
-; FirstLine = 4
+; CursorPosition = 14
 ; Folding = AA+
 ; EnableUnicode
 ; EnableXP

@@ -1,4 +1,7 @@
-﻿Global Frame0, Frame0, Frame0, Frame0, Frame0, Frame0, Text0, Text0, Text0, Text0, Frame0, Frame0, Frame0, Frame0, Frame0, Frame0
+﻿; Form Designer for Purebasic - 5.20
+; Warning: this file uses a strict syntax, if you edit it, make sure to respect the Form Designer limitation or it won't be opened again.
+
+Global Frame0, Frame0, Frame0, Frame0, Frame0, Frame0, Text0, Text0, Text0, Text0, Frame0, Frame0, Frame0, Frame0, Frame0, Frame0
 
 Enumeration FormWindow
   #WindowMain
@@ -170,13 +173,14 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 630, height = 480)
   EditorGadget(#EditorProvisorDescription, 320, 280, 260, 80)
   ButtonGadget(#ButtonAdd, 10, 380, 580, 30, "Добавить объект")
   AddGadgetItem(#Panel, -1, "Экспорт данных")
+  AddGadgetItem(#Panel, -1, "EasyGUI")
   CloseGadgetList()
 EndProcedure
 
 
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 175
-; FirstLine = 116
+; CursorPosition = 179
+; FirstLine = 119
 ; Folding = -
 ; EnableUnicode
 ; EnableXP
