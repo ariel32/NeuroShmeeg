@@ -36,6 +36,8 @@ Procedure FillState(query.s)
   EndIf
   If DatabaseUpdate(0, query) = 0
     Debug DatabaseError()
+  Else
+    ;Debug query
   EndIf
   CloseDatabase(0)
 EndProcedure
@@ -140,44 +142,37 @@ Procedure FixAdOps(Gadget, opName.s)
   query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', '"+mode+"', '"+vCategory+"','"+Str(ts)+"')"
   FillState(query)
 EndProcedure
+Procedure AddKS()
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Escape, #ExitFromProgramm)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F1, #ButtonRx)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F2, #ButtonNotRx)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F3, #ButtonIMT)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Space, #bExit)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_A, #b00)
+EndProcedure
 
 If CreatePopupMenu(#PopupMenu)
   MenuItem(#MenuY, "Y")
   MenuItem(#MenuA, "A")
   MenuItem(#MenuE, "E")
-  MenuBar()
+;   MenuBar()
   ;   OpenSubMenu("Options")
   ;     MenuItem(4, "Window...")
   ;     MenuItem(5, "Gadget...")
   ;   CloseSubMenu()
-  MenuItem(#MenuCount, "Ввести количество товаров")
-  DisableMenuItem(#PopupMenu, 4, 1)
+;   MenuItem(#MenuCount, "Ввести количество товаров")
+;   DisableMenuItem(#PopupMenu, 4, 1)
 EndIf
 
 
 OpenWindowMain() : StickyWindow(#WindowMain, 1)
 SetWindowTitle(#WindowMain, "NS "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount))
-
-AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Escape, #ExitFromProgramm)
-AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F1, #ButtonRx)
-AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F2, #ButtonNotRx)
-AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F3, #ButtonIMT)
-AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Return, #bExit)
-
+AddKS()
 For x = #b02 To #b20: DisableGadget(x, 1) : Next
 DisableGadget(#b00, 1)
 GadgetsUpdate()
 FillState("")
 
-
-;{ TODO
-; + сделать так, чтобы при открытии окон автоматически обновлялись гаджеты
-; + таксирование рецепта
-; + снятие копии рецепта
-; + снятие копии рецепта
-; + ПОВЫСИТЬ ГРАНУЛЯРНОСТЬ!""2221111
-; - сделать так, чтобы при выборе провизора или аптеки обновлялась информация о них
-;}
 
 Repeat
   Event=WaitWindowEvent()
@@ -186,6 +181,12 @@ Repeat
   Window=EventWindow()
   Menu=EventMenu()
   Timer=EventTimer()
+  
+  If Gadget = #Panel And Type = #PB_EventType_Change And GetGadgetState(#Panel) = 0
+    addks()
+  ElseIf Gadget = #Panel And Type = #PB_EventType_Change And GetGadgetState(#Panel) <> 0
+    RemoveKeyboardShortcut(#WindowMain, #PB_Shortcut_All)
+  EndIf
   
   
   If (Event = #PB_Event_Gadget And (Type = #PB_EventType_LeftClick Or Type = #PB_EventType_RightClick Or Type = #PB_EventType_Change)) Or Event = #PB_Event_Menu
@@ -229,7 +230,7 @@ Repeat
             If DatabaseQuery(0, query)
               ;ClearGadgetItems(Gadget)
               While NextDatabaseRow(0)
-                Debug GetDatabaseString(0, 0)
+                ;Debug GetDatabaseString(0, 0)
                 ;                AddGadgetItem(#ComboOrganisationName, -1, GetDatabaseString(0, 0))
               Wend
               FinishDatabaseQuery(0)
@@ -406,7 +407,7 @@ Repeat
         FillState(query)
         EndMaintaince()        
         SetGadgetState(#b01, 0)
-        SetGadgetState(#ListIconQueue, 0)
+        SetGadgetItemState(#ListIconQueue, 0, #PB_ListIcon_Selected)
         ;--------------------------------------------------------
       Case #bops01 : FixAdOps(Gadget, "bops01")
       Case #bops02 : FixAdOps(Gadget, "bops02")
@@ -428,7 +429,6 @@ Repeat
       Case #ButtonRx
         If GetGadgetState(#ButtonRx) = 0 : i = -1 : Else : i = 1 : EndIf
         ;If GetGadgetState(#ButtonRx) = 0 : SetGadgetState(#ButtonRxL, 0) : EndIf
-        Debug 111111111111
         cMode = cMode + i
         EDnableRx(i)
       Case #ButtonRx2
@@ -473,7 +473,7 @@ Repeat
                     "'"+GetGadgetText(#StringCSAddres)+"', '"+GetGadgetText(#EditorCSDescription)+"','"+GetGadgetText(#StringProvisorName)+"',"+
                     "'"+GetGadgetText(#ComboProvisorTNumber)+"', '"+GetGadgetText(#ComboProvisorSex)+"', '"+GetGadgetText(#StringProvisorAge)+"', '"+GetGadgetText(#ComboProvisorEducation)+"', '"+GetGadgetText(#ComboProvisorCategory)+"', '"+GetGadgetText(#EditorProvisorDescription)+"', '"+GetGadgetText(#StringProvisorExpCont)+"', '"+GetGadgetText(#StringProvisorExpGeneral)+"')"
           FillState(query)
-          Debug query
+          ;Debug query
           SetGadgetText(#ComboOrganisationName, "")  : SetGadgetText(#ComboCSName, "")
           SetGadgetText(#ComboCSCategory, "")        : SetGadgetText(#StringCSAddres, "")
           SetGadgetText(#EditorCSDescription, "")    : SetGadgetText(#StringProvisorName, "")
@@ -496,8 +496,9 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 61
-; Folding = 1I+
+; CursorPosition = 37
+; FirstLine = 4
+; Folding = AA+
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29

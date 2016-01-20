@@ -7,7 +7,7 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2016-01-09 21:31" user="Angel" host="ANGEL"/>
+    <lastopen date="2016-01-20 22:58" user="Angel" host="ANGEL"/>
   </section>
   <section name="files">
     <file name="NeuroShmeegGUI.pbf">
@@ -16,7 +16,7 @@
     </file>
     <file name="NeuroShmeeg.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="21f807a3b79653d420fe71a2ab18347a"/>
+      <fingerprint md5="5328bd8c82d50f1f76ff1cb6a12fc099"/>
     </file>
   </section>
   <section name="targets">
@@ -28,7 +28,7 @@
       <icon enable="1">
         hypnotoad.ico
       </icon>
-      <compilecount enable="1" value="7"/>
+      <compilecount enable="1" value="8"/>
       <buildcount enable="1" value="2"/>
     </target>
   </section>
