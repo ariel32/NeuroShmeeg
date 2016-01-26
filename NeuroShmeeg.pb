@@ -12,7 +12,7 @@ EndEnumeration
 
 UseSQLiteDatabase()
 
-Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.7"
+Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.8"
 Global cID.q = 0
 Global cMode = 0
 Global sessID, ts.q
@@ -187,18 +187,6 @@ Repeat
     RemoveKeyboardShortcut(#WindowMain, #PB_Shortcut_All)
   EndIf
   
-  ; колдунство с упрощенным интерфейсом
-  If Gadget = #Panel And Type = #PB_EventType_Change And GetGadgetState(#Panel) = 4 And GetGadgetItemText(#Panel, 4) = "EasyGUI"
-    SetGadgetItemText(#Panel, 4, "FullGUI")
-    For x = #b01 To #bExit : HideGadget(x, 1) : Next
-    SetGadgetState(#Panel, 0)
-    
-  ElseIf Gadget = #Panel And Type = #PB_EventType_Change And GetGadgetState(#Panel) = 4 And GetGadgetItemText(#Panel, 4) = "FullGUI"
-    OpenWindowMain()
-    SetGadgetItemText(#Panel, 4, "EasyGUI")
-  EndIf
-  
-  
   If (Event = #PB_Event_Gadget And (Type = #PB_EventType_LeftClick Or Type = #PB_EventType_RightClick Or Type = #PB_EventType_Change)) Or Event = #PB_Event_Menu
     If Menu = #ExitFromProgramm : End : EndIf
     ;{ заставляем ввести провизора при отстуствии такового в #ComboProvisor
@@ -227,7 +215,8 @@ Repeat
     EndIf
     ;}
     
-    Select Gadget
+    ts = Date()*1000   
+    Select Gadget        
       Case  #ListIconQueue
         If Type = #PB_EventType_RightClick And CountGadgetItems(#ListIconQueue) > 0 And GetGadgetState(#ListIconQueue) <> -1
           DisplayPopupMenu(#PopupMenu, WindowID(#WindowMain))
@@ -294,13 +283,11 @@ Repeat
       Case #MenuY : SetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), "Y", 2)
         ;---------------------------------
       Case #b00 ; постановка в очередь
-        ts = Date()*1000+ElapsedMilliseconds()-sET
         AddGadgetItem(#ListIconQueue, -1, Str(CountGadgetItems(#ListIconQueue)+1)+Chr(10)+Str(ts))
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b00', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b01 ; поступил на обслуживание
-        ts = Date()*1000+ElapsedMilliseconds()-sET
         If CountGadgetItems(#ListIconQueue) = 0
           AddGadgetItem(#ListIconQueue, -1, Str(CountGadgetItems(#ListIconQueue)+1)+Chr(10)+Str(ts))
         EndIf
@@ -309,27 +296,22 @@ Repeat
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b01', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b02
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b02', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b03
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b03', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b04
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b04', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b05
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b05', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b06
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b06', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
@@ -339,79 +321,64 @@ Repeat
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b07', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b08
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b08', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b09
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b09', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b10
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b10', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)        
       Case #b11
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b11', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b12
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b12', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b13
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b13', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b14
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b14', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)        
       Case #b15
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b15', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b16
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b16', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b17
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b17', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)        
       Case #b18
         If MessageRequester("---","Расчет осуществлен при помощи наличных денеждных значков?", #MB_YESNO | #MB_ICONQUESTION) = #PB_MessageRequester_Ok
-          ts = Date()*1000
           cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
           query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b18a', '"+vCategory+"','"+Str(ts)+"')"
           FillState(query)
         Else
-          ts = Date()*1000
           cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
           query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b18b', '"+vCategory+"','"+Str(ts)+"')"
           FillState(query)
         EndIf
       Case #b19
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b19', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b20
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'b20', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)          
       Case #bExit
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+cID+"', '"+cMode+"', 'END', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)

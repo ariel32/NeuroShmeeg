@@ -1,7 +1,4 @@
-﻿; Form Designer for Purebasic - 5.20
-; Warning: this file uses a strict syntax, if you edit it, make sure to respect the Form Designer limitation or it won't be opened again.
-
-Global Frame0, Frame0, Frame0, Frame0, Frame0, Frame0, Text0, Text0, Text0, Text0, Frame0, Frame0, Frame0, Frame0, Frame0, Frame0
+﻿Global Frame0, Frame0, Frame0, Frame0, Frame0, Frame0, Text0, Text0, Text0, Text0, Frame0, Frame0, Frame0, Frame0, Frame0, Frame0
 
 Enumeration FormWindow
   #WindowMain
@@ -87,28 +84,28 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 630, height = 480)
   AddGadgetColumn(#ListIconQueue, 1, "ID", 100)
   AddGadgetColumn(#ListIconQueue, 2, "Категория", 75)
   ComboBoxGadget(#ComboProvisor, 10, 10, 230, 20)
-  ButtonGadget(#b00, 250, 40, 340, 20, "00: Постановка в очередь")
-  ButtonGadget(#b01, 250, 60, 340, 20, "01: Обращение к провизору", #PB_Button_Toggle)
-  ButtonGadget(#b02, 250, 80, 340, 20, "02: Фармацевтическая экспертиза рецепта", #PB_Button_Toggle)
-  ButtonGadget(#b03, 250, 100, 340, 20, "03: Предъявление документа, подтверждающего льготу", #PB_Button_Toggle)
-  ButtonGadget(#b04, 250, 120, 340, 20, "04: Информация о мед. применении", #PB_Button_Toggle)
-  ButtonGadget(#b05, 250, 140, 340, 20, "05: Поиск ЛС, МИ в базе данных", #PB_Button_Toggle)
-  ButtonGadget(#b06, 250, 160, 340, 20, "06: Поиск на местах хранения", #PB_Button_Toggle)
-  ButtonGadget(#b07, 250, 180, 340, 20, "07: Таксирование рецепта", #PB_Button_Toggle)
-  ButtonGadget(#b08, 250, 200, 340, 20, "08: Отрывной корешок", #PB_Button_Toggle)
-  ButtonGadget(#b09, 250, 220, 340, 20, "09: Карта учета льготного отпуска", #PB_Button_Toggle)
-  ButtonGadget(#b10, 250, 240, 340, 20, "10: Демонстрация МИ", #PB_Button_Toggle)
-  ButtonGadget(#b11, 250, 260, 340, 20, "11: Информирование об эксплуатации МИ", #PB_Button_Toggle)
-  ButtonGadget(#b12, 250, 280, 340, 20, "12: Гарантийный талон", #PB_Button_Toggle)
-  ButtonGadget(#b13, 250, 300, 340, 20, "13: Проверка упаковки, маркировки, срока годности", #PB_Button_Toggle)
-  ButtonGadget(#b14, 250, 320, 340, 20, "14: Копия инструкции", #PB_Button_Toggle)
-  ButtonGadget(#b15, 10, 340, 280, 20, "15: Копия рецепта", #PB_Button_Toggle)
-  ButtonGadget(#b16, 290, 340, 300, 20, "16: Не проходящий товар", #PB_Button_Toggle)
-  ButtonGadget(#b17, 10, 360, 280, 20, "17: Скидка", #PB_Button_Toggle)
-  ButtonGadget(#b18, 290, 360, 300, 20, "18: Расчеты", #PB_Button_Toggle)
-  ButtonGadget(#b19, 10, 380, 280, 20, "19: Оборотная сторона рецепта", #PB_Button_Toggle)
-  ButtonGadget(#b20, 290, 380, 300, 20, "20: Рецептурный журнал", #PB_Button_Toggle)
-  ButtonGadget(#bExit, 10, 400, 580, 20, "Окончание обслуживания")
+  ButtonGadget(#b00, 250, 40, 340, 30, "00: Постановка в очередь")
+  ButtonGadget(#b01, 250, 70, 340, 30, "01: Обращение к провизору", #PB_Button_Toggle)
+  ButtonGadget(#b02, 250, 200, 120, 30, "02: ФЭР", #PB_Button_Toggle)
+  ButtonGadget(#b03, 250, 240, 120, 30, "03: Док-т для Л", #PB_Button_Toggle)
+  ButtonGadget(#b04, 460, 110, 130, 30, "04: Инф. о МП", #PB_Button_Toggle)
+  ButtonGadget(#b05, 250, 110, 110, 30, "05: Поиск в БД", #PB_Button_Toggle)
+  ButtonGadget(#b06, 360, 110, 100, 30, "06: Поиск на МХ", #PB_Button_Toggle)
+  ButtonGadget(#b07, 370, 200, 120, 30, "07: Такс.", #PB_Button_Toggle)
+  ButtonGadget(#b08, 490, 240, 100, 30, "08: Отр. кор.", #PB_Button_Toggle)
+  ButtonGadget(#b09, 370, 240, 120, 30, "09: Карта ЛО", #PB_Button_Toggle)
+  ButtonGadget(#b10, 250, 270, 120, 30, "10: Дем. МИ", #PB_Button_Toggle)
+  ButtonGadget(#b11, 370, 270, 120, 30, "11: Инф. об эксп. МИ", #PB_Button_Toggle)
+  ButtonGadget(#b12, 490, 270, 100, 30, "12: Гар. талон", #PB_Button_Toggle)
+  ButtonGadget(#b13, 250, 300, 120, 30, "13: У-М-СГ", #PB_Button_Toggle)
+  ButtonGadget(#b14, 370, 300, 120, 30, "14: Копия И", #PB_Button_Toggle)
+  ButtonGadget(#b15, 490, 300, 100, 30, "15: Копия Р", #PB_Button_Toggle)
+  ButtonGadget(#b16, 10, 340, 230, 28, "16: Не проходящий товар", #PB_Button_Toggle)
+  ButtonGadget(#b17, 490, 150, 100, 40, "17: Скидка", #PB_Button_Toggle)
+  ButtonGadget(#b18, 250, 150, 240, 40, "18: Расчеты", #PB_Button_Toggle)
+  ButtonGadget(#b19, 490, 200, 100, 30, "19: Об. ст. рец.", #PB_Button_MultiLine | #PB_Button_Toggle)
+  ButtonGadget(#b20, 250, 340, 340, 28, "20: Рецептурный журнал", #PB_Button_Toggle)
+  ButtonGadget(#bExit, 10, 378, 580, 42, "Окончание обслуживания")
   AddGadgetItem(#Panel, -1, "Прочее")
   Frame0 = FrameGadget(#PB_Any, 10, 10, 580, 192, "Работы, не связанные с реализацией товаров из аптеки")
   ButtonGadget(#bops01, 20, 30, 280, 20, "а. Подготовительные работы", #PB_Button_Toggle)
@@ -173,14 +170,13 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 630, height = 480)
   EditorGadget(#EditorProvisorDescription, 320, 280, 260, 80)
   ButtonGadget(#ButtonAdd, 10, 380, 580, 30, "Добавить объект")
   AddGadgetItem(#Panel, -1, "Экспорт данных")
-  AddGadgetItem(#Panel, -1, "EasyGUI")
   CloseGadgetList()
 EndProcedure
 
 
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 179
-; FirstLine = 119
+; CursorPosition = 175
+; FirstLine = 116
 ; Folding = -
 ; EnableUnicode
 ; EnableXP
