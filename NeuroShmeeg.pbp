@@ -7,16 +7,16 @@
   <section name="data">
     <explorer view="" pattern="0"/>
     <log show="1"/>
-    <lastopen date="2016-01-26 23:25" user="Angel" host="ANGEL"/>
+    <lastopen date="2016-02-03 21:47" user="Angel" host="ANGEL"/>
   </section>
   <section name="files">
     <file name="NeuroShmeegGUI.pbf">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="4ea227bcf42e6c2ce6c413e2af1af41e"/>
+      <fingerprint md5="dbef6953d8305f99a9a652f59c9eb92e"/>
     </file>
     <file name="NeuroShmeeg.pb">
       <config load="0" scan="1" panel="1" warn="1" lastopen="1" panelstate="+"/>
-      <fingerprint md5="ce8b6417be4e8461f3a38da5979c91f5"/>
+      <fingerprint md5="b83a2e391920bb07cb8ba451c48b8c12"/>
     </file>
   </section>
   <section name="targets">
@@ -28,8 +28,8 @@
       <icon enable="1">
         hypnotoad.ico
       </icon>
-      <compilecount enable="1" value="6"/>
-      <buildcount enable="1" value="2"/>
+      <compilecount enable="1" value="16"/>
+      <buildcount enable="1" value="3"/>
     </target>
   </section>
 </project>

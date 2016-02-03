@@ -12,7 +12,7 @@ EndEnumeration
 
 UseSQLiteDatabase()
 
-Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.8"
+Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.9"
 Global cID.q = 0
 Global cMode = 0
 Global sessID, ts.q
