@@ -32,9 +32,9 @@ Procedure FillState(query.s)
     
     makeDB.s = "CREATE TABLE provisors(orgName TEXT, CSNumber INT, CSCategory TEXT, CSAddres TEXT, CSDescription TEXT, "+
                "provisorName TEXT, provisorTNumber TEXT, provisorSex TEXT, provisorAge INT,  provisorEducation TEXT, provisorCategory INT, provisorDescription TEXT, provisorExpCont INT, provisorExpGeneral INT, PRIMARY KEY (CSNumber, provisorTNumber));"+
-               "CREATE TABLE observations (sessid INT, inqnum INT, tos INT, stdabbrev VARCHAR(50), visitorCategory VARCHAR(50), timestamp INT)"+
-               "CREATE TABLE comments(timestamp INT, comment TEXT)"
-    ;Debug makeDB
+               "CREATE TABLE observations (sessid INT, inqnum INT, tos INT, stdabbrev VARCHAR(50), visitorCategory VARCHAR(50), timestamp INT);"+
+               "CREATE TABLE comments(timestamp INT, comment TEXT);"
+    Debug makeDB
     If DatabaseUpdate(0, makeDB) = 0
       Debug DatabaseError()
     EndIf
@@ -544,8 +544,8 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 16
-; Folding = AQ9
+; CursorPosition = 33
+; Folding = BQ9
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
