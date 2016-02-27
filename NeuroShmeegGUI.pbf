@@ -36,6 +36,10 @@ Enumeration FormGadget
   #b19
   #b20
   #bExit
+  #DateGadget
+  #ButtonTimeShiftNow
+  #ButtonTimeShiftPause
+  #ButtonTimeShiftStart
   #bops01
   #bops02
   #bops03
@@ -52,6 +56,8 @@ Enumeration FormGadget
   #bops14
   #bops15
   #bops16
+  #EditorComment
+  #ButtonAddComment
   #ComboOrganisationName
   #ComboCSName
   #StringCSAddres
@@ -80,17 +86,17 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 760, height = 480)
   ButtonGadget(#ButtonNotRx, 550, 10, 70, 20, "Rx -", #PB_Button_Toggle)
   ButtonGadget(#ButtonIMT, 640, 10, 80, 20, "ИМТ/ТАА", #PB_Button_Toggle)
   ButtonGadget(#ButtonRxL, 250, 10, 70, 20, "RxL", #PB_Button_Toggle)
-  ListIconGadget(#ListIconQueue, 10, 40, 230, 288, "#", 50, #PB_ListIcon_GridLines | #PB_ListIcon_FullRowSelect | #PB_ListIcon_AlwaysShowSelection)
+  ListIconGadget(#ListIconQueue, 10, 98, 230, 230, "#", 50, #PB_ListIcon_GridLines | #PB_ListIcon_FullRowSelect | #PB_ListIcon_AlwaysShowSelection)
   AddGadgetColumn(#ListIconQueue, 1, "ID", 100)
   AddGadgetColumn(#ListIconQueue, 2, "Категория", 75)
-  ComboBoxGadget(#ComboProvisor, 10, 10, 230, 20)
+  ComboBoxGadget(#ComboProvisor, 10, 70, 230, 20)
   ButtonGadget(#b00, 250, 40, 470, 30, "00: Постановка в очередь")
   ButtonGadget(#b01, 250, 70, 470, 30, "01: Обращение к провизору", #PB_Button_Toggle)
   ButtonGadget(#b02, 250, 200, 240, 30, "02: Фармэкспертиза рецепта", #PB_Button_Toggle)
   ButtonGadget(#b03, 250, 240, 120, 30, "03: Док-т для Л", #PB_Button_Toggle)
-  ButtonGadget(#b04, 530, 110, 190, 30, "04: Информация о применении", #PB_Button_Toggle)
-  ButtonGadget(#b05, 250, 110, 140, 30, "05: Поиск в БД", #PB_Button_Toggle)
-  ButtonGadget(#b06, 390, 110, 140, 30, "06: Поиск на МХ", #PB_Button_Toggle)
+  ButtonGadget(#b04, 250, 110, 190, 30, "04: Информация о применении", #PB_Button_Toggle)
+  ButtonGadget(#b05, 440, 110, 140, 30, "05: Поиск в БД", #PB_Button_Toggle)
+  ButtonGadget(#b06, 580, 110, 140, 30, "06: Поиск на МХ", #PB_Button_Toggle)
   ButtonGadget(#b07, 490, 200, 100, 30, "07: Таксировка", #PB_Button_Toggle)
   ButtonGadget(#b08, 490, 240, 230, 30, "08: Оформление отрывных корешков", #PB_Button_Toggle)
   ButtonGadget(#b09, 370, 240, 120, 30, "09: Карта ЛО", #PB_Button_Toggle)
@@ -106,6 +112,10 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 760, height = 480)
   ButtonGadget(#b19, 590, 200, 130, 30, "19: Обратная сторона", #PB_Button_MultiLine | #PB_Button_Toggle)
   ButtonGadget(#b20, 250, 340, 470, 28, "20: Рецептурный журнал", #PB_Button_Toggle)
   ButtonGadget(#bExit, 10, 378, 710, 42, "Окончание обслуживания")
+  DateGadget(#DateGadget, 10, 10, 150, 20, "%mm/%dd/%yyyy : %hh:%ii")
+  ButtonGadget(#ButtonTimeShiftNow, 170, 10, 70, 20, "Сброс")
+  ButtonGadget(#ButtonTimeShiftPause, 130, 40, 110, 20, "Пауза")
+  ButtonGadget(#ButtonTimeShiftStart, 10, 40, 110, 20, "Старт")
   AddGadgetItem(#Panel, -1, "Прочее")
   Frame0 = FrameGadget(#PB_Any, 10, 10, 710, 410, "Работы, не связанные с реализацией товаров из аптеки")
   ButtonGadget(#bops01, 20, 30, 340, 40, "а. Подготовительные работы", #PB_Button_Toggle)
@@ -124,6 +134,9 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 760, height = 480)
   ButtonGadget(#bops14, 360, 270, 340, 40, "о-1. Перерыв из-за отсутствия посетителей", #PB_Button_Toggle)
   ButtonGadget(#bops15, 20, 310, 340, 40, "о-2. Другие нерегламентированные перерывы", #PB_Button_Toggle)
   ButtonGadget(#bops16, 360, 308, 340, 40, "п. Заключительные работы", #PB_Button_Toggle)
+  AddGadgetItem(#Panel, -1, "Комментарии")
+  EditorGadget(#EditorComment, 10, 10, 710, 150)
+  ButtonGadget(#ButtonAddComment, 10, 168, 210, 20, "Добавить комментарий")
   AddGadgetItem(#Panel, -1, "Добавление объектов")
   Frame0 = FrameGadget(#PB_Any, 310, 10, 410, 50, "Категория аптеки")
   Frame0 = FrameGadget(#PB_Any, 10, 60, 290, 50, "Название аптеки")
@@ -175,8 +188,8 @@ EndProcedure
 
 
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 175
-; FirstLine = 116
+; CursorPosition = 188
+; FirstLine = 129
 ; Folding = -
 ; EnableUnicode
 ; EnableXP

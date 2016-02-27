@@ -6,18 +6,22 @@ Enumeration MyCONST
   #MenuA
   #MenuE
   #MenuCount
+  #DateUpdater
+  #tsUpdater
   #ExitFromProgramm = 64000
 EndEnumeration
 
 
 UseSQLiteDatabase()
 
-Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.9"
+Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.10"
 Global cID.q = 0
 Global cMode = 0
-Global sessID, ts.q
+Global sessID, ts.q, StartTime.q, StartDate.q
+Global TimeShift = 0
 
-sET = ElapsedMilliseconds()
+StartTime = ElapsedMilliseconds()
+StartDate = Date()*1000
 
 Procedure FillState(query.s)
   If FileSize(dbFile) > 0
@@ -28,7 +32,8 @@ Procedure FillState(query.s)
     
     makeDB.s = "CREATE TABLE provisors(orgName TEXT, CSNumber INT, CSCategory TEXT, CSAddres TEXT, CSDescription TEXT, "+
                "provisorName TEXT, provisorTNumber TEXT, provisorSex TEXT, provisorAge INT,  provisorEducation TEXT, provisorCategory INT, provisorDescription TEXT, provisorExpCont INT, provisorExpGeneral INT, PRIMARY KEY (CSNumber, provisorTNumber));"+
-               "CREATE TABLE observations (sessid INT, inqnum INT, tos INT, stdabbrev VARCHAR(50), visitorCategory VARCHAR(50), timestamp INT)"
+               "CREATE TABLE observations (sessid INT, inqnum INT, tos INT, stdabbrev VARCHAR(50), visitorCategory VARCHAR(50), timestamp INT)"+
+               "CREATE TABLE comments(timestamp INT, comment TEXT)"
     ;Debug makeDB
     If DatabaseUpdate(0, makeDB) = 0
       Debug DatabaseError()
@@ -144,11 +149,30 @@ Procedure FixAdOps(Gadget, opName.s)
 EndProcedure
 Procedure AddKS()
   AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Escape, #ExitFromProgramm)
-  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F1, #ButtonRx)
-  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F2, #ButtonNotRx)
-  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F3, #ButtonIMT)
+  
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F1, #b00)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_A, #b01)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_S, #b04)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_D, #b05)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_F, #b06)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Tab, #b18)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_G, #b17)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Q, #b02)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_W, #b07)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_E, #b19)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_X, #b03)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_C, #b09)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_R, #b08)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Z, #b13)
   AddKeyboardShortcut(#WindowMain, #PB_Shortcut_Space, #bExit)
-  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_A, #b00)
+  
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_1, #ButtonRx)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_2, #ButtonRx2)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_3, #ButtonRx3)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_4, #ButtonRxL)
+  AddKeyboardShortcut(#WindowMain, #PB_Shortcut_5, #ButtonIMT)
+  
+  
 EndProcedure
 
 If CreatePopupMenu(#PopupMenu)
@@ -172,6 +196,10 @@ For x = #b02 To #b20: DisableGadget(x, 1) : Next
 DisableGadget(#b00, 1)
 GadgetsUpdate()
 FillState("")
+SetGadgetState(#DateGadget, Date()) : DisableGadget(#ButtonTimeShiftPause, 1)
+AddWindowTimer(#WindowMain, #DateUpdater, 1000)
+AddWindowTimer(#WindowMain, #tsUpdater, 100)
+
 
 Repeat
   Event=WaitWindowEvent()
@@ -186,7 +214,43 @@ Repeat
   ElseIf Gadget = #Panel And Type = #PB_EventType_Change And GetGadgetState(#Panel) <> 0
     RemoveKeyboardShortcut(#WindowMain, #PB_Shortcut_All)
   EndIf
-  
+      ;{ обрабатываем TimeShift : устанавливаем и обновляем дату
+    If Gadget = #ButtonTimeShiftNow And Type = #PB_EventType_LeftClick
+      TimeShift = 0
+      StartTime = ElapsedMilliseconds()
+      StartDate = Date()*1000
+      SetGadgetState(#DateGadget, Date())
+      SetGadgetColor(#DateGadget, #PB_Gadget_FrontColor, #White)
+      DisableGadget(#ButtonTimeShiftStart, 0) : DisableGadget(#ButtonTimeShiftPause, 1) : DisableGadget(#DateGadget, 0)
+    EndIf
+    If (Gadget = #ButtonTimeShiftStart And Type = #PB_EventType_LeftClick)
+      If TimeShift = 0
+        StartTime = ElapsedMilliseconds()
+        StartDate = GetGadgetState(#DateGadget)*1000
+      ElseIf TimeShift = 2
+        StartTime = ElapsedMilliseconds()
+        StartDate = ts
+      EndIf  
+      TimeShift = 1
+      SetGadgetColor(#DateGadget, #PB_Gadget_FrontColor, #Green)
+      DisableGadget(#ButtonTimeShiftStart, 1) : DisableGadget(#ButtonTimeShiftPause, 0) : DisableGadget(#DateGadget, 0)
+    EndIf
+    If Gadget = #ButtonTimeShiftPause And Type = #PB_EventType_LeftClick
+      TimeShift = 2
+      SetGadgetColor(#DateGadget, #PB_Gadget_FrontColor, #Gray)
+      DisableGadget(#ButtonTimeShiftStart, 0) : DisableGadget(#ButtonTimeShiftPause, 1) : DisableGadget(#DateGadget, 1)
+    EndIf
+    ; обновление по таймеру
+    If Event = #PB_Event_Timer And Timer = #DateUpdater And GetActiveGadget() <> #DateGadget And TimeShift <> 2
+      SetGadgetState(#DateGadget, ts/1000)
+      Debug FormatDate("%dd:%mm:%yyyy - %hh:%ii:%ss", ts/1000)
+    EndIf
+    If Event = #PB_Event_Timer And Timer = #tsUpdater And TimeShift <> 2
+      ts = ElapsedMilliseconds() - StartTime + StartDate
+    EndIf
+    
+    ;}
+    
   If (Event = #PB_Event_Gadget And (Type = #PB_EventType_LeftClick Or Type = #PB_EventType_RightClick Or Type = #PB_EventType_Change)) Or Event = #PB_Event_Menu
     If Menu = #ExitFromProgramm : End : EndIf
     ;{ заставляем ввести провизора при отстуствии такового в #ComboProvisor
@@ -214,8 +278,15 @@ Repeat
       EndIf
     EndIf
     ;}
+    ;{ пишем комментарии в БД
+    If Gadget = #ButtonAddComment
+      query = "INSERT INTO comments (timestamp, comment) VALUES ('"+GetGadgetState(#DateGadget)+"', '"+GetGadgetText(#EditorComment)+"')"
+      Debug query
+      FillState(query)
+    EndIf
+    ;}
     
-    ts = Date()*1000   
+;   ts = ElapsedMilliseconds() - StartTime + GetGadgetState(#DateGadget)*1000
     Select Gadget        
       Case  #ListIconQueue
         If Type = #PB_EventType_RightClick And CountGadgetItems(#ListIconQueue) > 0 And GetGadgetState(#ListIconQueue) <> -1
@@ -473,8 +544,8 @@ Repeat
   
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 14
-; Folding = AA+
+; CursorPosition = 16
+; Folding = AQ9
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
