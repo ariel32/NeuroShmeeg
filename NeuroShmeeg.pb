@@ -14,7 +14,7 @@ EndEnumeration
 
 UseSQLiteDatabase()
 
-Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.11"
+Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.12"
 Global cID.q = 0
 Global cMode = 0
 Global sessID, ts.q, StartTime.q, StartDate.q
@@ -388,7 +388,6 @@ Repeat
         query = "INSERT INTO observations (sessid, CSNumber, provisorTNumber, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+CSNumber+"', '"+provisorTNumber+"', '"+cID+"', '"+cMode+"', 'b06', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
       Case #b07
-        ts = Date()*1000
         cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
         query = "INSERT INTO observations (sessid, CSNumber, provisorTNumber, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+CSNumber+"', '"+provisorTNumber+"', '"+cID+"', '"+cMode+"', 'b07', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)
@@ -433,7 +432,7 @@ Repeat
         query = "INSERT INTO observations (sessid, CSNumber, provisorTNumber, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+CSNumber+"', '"+provisorTNumber+"', '"+cID+"', '"+cMode+"', 'b17', '"+vCategory+"','"+Str(ts)+"')"
         FillState(query)        
       Case #b18
-        If MessageRequester("---","Расчет осуществлен при помощи наличных денеждных значков?", #MB_YESNO | #MB_ICONQUESTION) = #PB_MessageRequester_Ok
+        If MessageRequester("---","Расчет осуществлен при помощи наличных денеждных значков?", #MB_YESNO | #MB_ICONQUESTION) = #IDYES
           cID = Val(GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 1)) : vCategory = GetGadgetItemText(#ListIconQueue, GetGadgetState(#ListIconQueue), 2)
           query = "INSERT INTO observations (sessid, CSNumber, provisorTNumber, inqnum, tos, stdabbrev, visitorCategory, timestamp) VALUES ('"+sessID+"', '"+CSNumber+"', '"+provisorTNumber+"', '"+cID+"', '"+cMode+"', 'b18a', '"+vCategory+"','"+Str(ts)+"')"
           FillState(query)
@@ -559,7 +558,7 @@ Repeat
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
 ; CursorPosition = 16
-; Folding = BA9
+; Folding = BQ9
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
