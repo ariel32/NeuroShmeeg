@@ -6,14 +6,18 @@ EndEnumeration
 
 Enumeration FormGadget
   #Panel
+  #ListIconQueue
+  #ComboProvisor
+  #DateGadget
+  #ButtonTimeShiftNow
+  #ButtonTimeShiftPause
+  #ButtonTimeShiftStart  
   #ButtonRx
   #ButtonRx2
   #ButtonRx3
   #ButtonNotRx
   #ButtonIMT
   #ButtonRxL
-  #ListIconQueue
-  #ComboProvisor
   #b00
   #b01
   #b02
@@ -36,10 +40,6 @@ Enumeration FormGadget
   #b19
   #b20
   #bExit
-  #DateGadget
-  #ButtonTimeShiftNow
-  #ButtonTimeShiftPause
-  #ButtonTimeShiftStart
   #bops01
   #bops02
   #bops03
@@ -80,16 +80,20 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 760, height = 480)
   OpenWindow(#WindowMain, x, y, width, height, "", #PB_Window_SystemMenu | #PB_Window_MinimizeGadget | #PB_Window_ScreenCentered)
   PanelGadget(#Panel, 10, 10, 740, 460)
   AddGadgetItem(#Panel, -1, "Наблюдения")
+  ListIconGadget(#ListIconQueue, 10, 98, 230, 230, "#", 50, #PB_ListIcon_GridLines | #PB_ListIcon_FullRowSelect | #PB_ListIcon_AlwaysShowSelection)
+  AddGadgetColumn(#ListIconQueue, 1, "ID", 100)
+  AddGadgetColumn(#ListIconQueue, 2, "Категория", 75)
+  ComboBoxGadget(#ComboProvisor, 10, 70, 230, 20)
+  DateGadget(#DateGadget, 10, 10, 150, 20, "%mm/%dd/%yyyy : %hh:%ii")
+  ButtonGadget(#ButtonTimeShiftNow, 170, 10, 70, 20, "Сброс")
+  ButtonGadget(#ButtonTimeShiftPause, 130, 40, 110, 20, "Пауза")
+  ButtonGadget(#ButtonTimeShiftStart, 10, 40, 110, 20, "Старт")  
   ButtonGadget(#ButtonRx, 320, 10, 70, 20, "Rx1", #PB_Button_Toggle)
   ButtonGadget(#ButtonRx2, 390, 10, 70, 20, "Rx2", #PB_Button_Toggle)
   ButtonGadget(#ButtonRx3, 460, 10, 70, 20, "Rx3", #PB_Button_Toggle)
   ButtonGadget(#ButtonNotRx, 550, 10, 70, 20, "Rx -", #PB_Button_Toggle)
   ButtonGadget(#ButtonIMT, 640, 10, 80, 20, "ИМТ/ТАА", #PB_Button_Toggle)
   ButtonGadget(#ButtonRxL, 250, 10, 70, 20, "RxL", #PB_Button_Toggle)
-  ListIconGadget(#ListIconQueue, 10, 98, 230, 230, "#", 50, #PB_ListIcon_GridLines | #PB_ListIcon_FullRowSelect | #PB_ListIcon_AlwaysShowSelection)
-  AddGadgetColumn(#ListIconQueue, 1, "ID", 100)
-  AddGadgetColumn(#ListIconQueue, 2, "Категория", 75)
-  ComboBoxGadget(#ComboProvisor, 10, 70, 230, 20)
   ButtonGadget(#b00, 250, 40, 470, 30, "00: Постановка в очередь")
   ButtonGadget(#b01, 250, 70, 470, 30, "01: Обращение к провизору", #PB_Button_Toggle)
   ButtonGadget(#b02, 250, 200, 240, 30, "02: Фармэкспертиза рецепта", #PB_Button_Toggle)
@@ -112,10 +116,6 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 760, height = 480)
   ButtonGadget(#b19, 590, 200, 130, 30, "19: Обратная сторона", #PB_Button_MultiLine | #PB_Button_Toggle)
   ButtonGadget(#b20, 250, 340, 470, 28, "20: Рецептурный журнал", #PB_Button_Toggle)
   ButtonGadget(#bExit, 10, 378, 710, 42, "Окончание обслуживания")
-  DateGadget(#DateGadget, 10, 10, 150, 20, "%mm/%dd/%yyyy : %hh:%ii")
-  ButtonGadget(#ButtonTimeShiftNow, 170, 10, 70, 20, "Сброс")
-  ButtonGadget(#ButtonTimeShiftPause, 130, 40, 110, 20, "Пауза")
-  ButtonGadget(#ButtonTimeShiftStart, 10, 40, 110, 20, "Старт")
   AddGadgetItem(#Panel, -1, "Прочее")
   Frame0 = FrameGadget(#PB_Any, 10, 10, 710, 410, "Работы, не связанные с реализацией товаров из аптеки")
   ButtonGadget(#bops01, 20, 30, 340, 40, "а. Подготовительные работы", #PB_Button_Toggle)
@@ -186,10 +186,9 @@ Procedure OpenWindowMain(x = 0, y = 0, width = 760, height = 480)
   CloseGadgetList()
 EndProcedure
 
-
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
-; CursorPosition = 188
-; FirstLine = 129
+; CursorPosition = 89
+; FirstLine = 68
 ; Folding = -
 ; EnableUnicode
 ; EnableXP

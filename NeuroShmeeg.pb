@@ -14,7 +14,7 @@ EndEnumeration
 
 UseSQLiteDatabase()
 
-Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.12"
+Global.s dbFile = "database.sqlite", query, vCategory, NS_version = "0.13"
 Global cID.q = 0
 Global cMode = 0
 Global sessID, ts.q, StartTime.q, StartDate.q
@@ -180,13 +180,13 @@ If CreatePopupMenu(#PopupMenu)
   MenuItem(#MenuY, "Y")
   MenuItem(#MenuA, "A")
   MenuItem(#MenuE, "E")
-;   MenuBar()
+  ;   MenuBar()
   ;   OpenSubMenu("Options")
   ;     MenuItem(4, "Window...")
   ;     MenuItem(5, "Gadget...")
   ;   CloseSubMenu()
-;   MenuItem(#MenuCount, "Ввести количество товаров")
-;   DisableMenuItem(#PopupMenu, 4, 1)
+  ;   MenuItem(#MenuCount, "Ввести количество товаров")
+  ;   DisableMenuItem(#PopupMenu, 4, 1)
 EndIf
 
 
@@ -215,44 +215,55 @@ Repeat
   ElseIf Gadget = #Panel And Type = #PB_EventType_Change And GetGadgetState(#Panel) <> 0
     RemoveKeyboardShortcut(#WindowMain, #PB_Shortcut_All)
   EndIf
-      ;{ обрабатываем TimeShift : устанавливаем и обновляем дату
-    If Gadget = #ButtonTimeShiftNow And Type = #PB_EventType_LeftClick
-      TimeShift = 0
+  ;{ обрабатываем TimeShift : устанавливаем и обновляем дату
+  If Gadget = #ButtonTimeShiftNow And Type = #PB_EventType_LeftClick
+    TimeShift = 0 ; таймшифта нет
+    StartTime = ElapsedMilliseconds()
+    StartDate = Date()*1000
+    SetGadgetState(#DateGadget, Date())
+    SetWindowTitle(#WindowMain, "NS "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor))
+    DisableGadget(#ButtonTimeShiftStart, 0) : DisableGadget(#ButtonTimeShiftPause, 1) : DisableGadget(#DateGadget, 0)
+  EndIf
+  If (Gadget = #ButtonTimeShiftStart And Type = #PB_EventType_LeftClick)
+    If TimeShift = 0 ; таймшифта нет
       StartTime = ElapsedMilliseconds()
-      StartDate = Date()*1000
-      SetGadgetState(#DateGadget, Date())
-      SetGadgetColor(#DateGadget, #PB_Gadget_FrontColor, #White)
-      DisableGadget(#ButtonTimeShiftStart, 0) : DisableGadget(#ButtonTimeShiftPause, 1) : DisableGadget(#DateGadget, 0)
+      StartDate = GetGadgetState(#DateGadget)*1000
+    ElseIf TimeShift = 2 ; таймшифт - пауза
+      StartTime = ElapsedMilliseconds()
+      StartDate = ts
     EndIf
-    If (Gadget = #ButtonTimeShiftStart And Type = #PB_EventType_LeftClick)
-      If TimeShift = 0
-        StartTime = ElapsedMilliseconds()
-        StartDate = GetGadgetState(#DateGadget)*1000
-      ElseIf TimeShift = 2
-        StartTime = ElapsedMilliseconds()
-        StartDate = ts
-      EndIf  
-      TimeShift = 1
-      SetGadgetColor(#DateGadget, #PB_Gadget_FrontColor, #Green)
+    TimeShift = 1 ; таймшифт - таймер тикает
+    SetWindowTitle(#WindowMain, "NS "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor)+": Работает сдвиг времени")
+    DisableGadget(#ButtonTimeShiftStart, 1) : DisableGadget(#ButtonTimeShiftPause, 0) : DisableGadget(#DateGadget, 0)
+  EndIf
+  If Gadget = #ButtonTimeShiftPause And Type = #PB_EventType_LeftClick
+    TimeShift = 2
+    SetWindowTitle(#WindowMain, "NS "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor)+": Включена пауза в режиме сдвига времени")
+    DisableGadget(#ButtonTimeShiftStart, 0) : DisableGadget(#ButtonTimeShiftPause, 1) : DisableGadget(#DateGadget, 1)
+  EndIf
+  ; обновление по таймеру
+  If Event = #PB_Event_Timer And Timer = #DateUpdater And GetActiveGadget() <> #DateGadget And TimeShift <> 2
+    SetGadgetState(#DateGadget, ts/1000)
+    Debug FormatDate("%dd:%mm:%yyyy - %hh:%ii:%ss", ts/1000)
+  EndIf
+  If Event = #PB_Event_Timer And Timer = #tsUpdater And TimeShift <> 2
+    ts = ElapsedMilliseconds() - StartTime + StartDate
+  EndIf
+  
+  ;}
+  
+  If (Event = #PB_Event_Gadget And (Type = #PB_EventType_LeftClick Or Type = #PB_EventType_RightClick Or Type = #PB_EventType_Change)) Or Event = #PB_Event_Menu
+;{  если нажата пуаза и тыкаются кнопки, пауза снимается!
+    If Gadget >= #ButtonRx And Gadget <= #bExit And TimeShift = 2
+      StartTime = ElapsedMilliseconds()
+      StartDate = ts
+      TimeShift = 1 ; таймшифт - таймер тикает
+      SetWindowTitle(#WindowMain, "NS "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor)+": Работает сдвиг времени")
       DisableGadget(#ButtonTimeShiftStart, 1) : DisableGadget(#ButtonTimeShiftPause, 0) : DisableGadget(#DateGadget, 0)
-    EndIf
-    If Gadget = #ButtonTimeShiftPause And Type = #PB_EventType_LeftClick
-      TimeShift = 2
-      SetGadgetColor(#DateGadget, #PB_Gadget_FrontColor, #Gray)
-      DisableGadget(#ButtonTimeShiftStart, 0) : DisableGadget(#ButtonTimeShiftPause, 1) : DisableGadget(#DateGadget, 1)
-    EndIf
-    ; обновление по таймеру
-    If Event = #PB_Event_Timer And Timer = #DateUpdater And GetActiveGadget() <> #DateGadget And TimeShift <> 2
-      SetGadgetState(#DateGadget, ts/1000)
-      Debug FormatDate("%dd:%mm:%yyyy - %hh:%ii:%ss", ts/1000)
-    EndIf
-    If Event = #PB_Event_Timer And Timer = #tsUpdater And TimeShift <> 2
       ts = ElapsedMilliseconds() - StartTime + StartDate
     EndIf
+;}    
     
-    ;}
-    
-  If (Event = #PB_Event_Gadget And (Type = #PB_EventType_LeftClick Or Type = #PB_EventType_RightClick Or Type = #PB_EventType_Change)) Or Event = #PB_Event_Menu
     If Menu = #ExitFromProgramm : End : EndIf
     ;{ заставляем ввести провизора при отстуствии такового в #ComboProvisor
     If GetGadgetText(#ComboProvisor) = "" And GetGadgetState(#Panel) = 0 And Type = #PB_EventType_LeftClick; And Gadget <> #Panel
@@ -287,7 +298,7 @@ Repeat
     EndIf
     ;}
     
-;   ts = ElapsedMilliseconds() - StartTime + GetGadgetState(#DateGadget)*1000
+    ;   ts = ElapsedMilliseconds() - StartTime + GetGadgetState(#DateGadget)*1000
     Select Gadget        
       Case  #ListIconQueue
         If Type = #PB_EventType_RightClick And CountGadgetItems(#ListIconQueue) > 0 And GetGadgetState(#ListIconQueue) <> -1
@@ -500,7 +511,7 @@ Repeat
         If GetGadgetState(#ButtonIMT) = 0 : i = -1 : Else : i = 1 : EndIf
         cMode = cMode + i*32
         EDnableIMT(i)
-
+        
         ;-------------------------------------------------------------
       Case #ComboProvisor
         sessID = Date()
@@ -558,7 +569,7 @@ Repeat
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
 ; CursorPosition = 16
-; Folding = BQ9
+; Folding = Aww
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
