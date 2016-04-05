@@ -56,3 +56,4 @@ sqlitebrowser_200_b1_win/
 # binary files
 database.sqlite
 #NeuroShmeeg.exe
+.Rhistory
