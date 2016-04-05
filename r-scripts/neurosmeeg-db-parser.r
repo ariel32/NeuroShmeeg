@@ -175,6 +175,7 @@ ch.data %<>%
   mutate(duration = (lead(timestamp,1)-timestamp)/1000) %>% 
   ungroup()
 
+<<<<<<< HEAD
 Encoding(ch.data$visitorCategory) <- "UTF-8"
 Encoding(ch.data$orgName) <- "UTF-8"
 Encoding(ch.data$CSNumber) <- "UTF-8"
@@ -183,11 +184,22 @@ Encoding(ch.data$CSAddres) <- "UTF-8"
 Encoding(ch.data$CSDescription) <- "UTF-8"
 Encoding(ch.data$provisorName) <- "UTF-8"
 Encoding(ch.data$provisorTNumber) <- "UTF-8"
+=======
+Encoding(ch.data$orgName) <- "UTF-8"
+Encoding(ch.data$CSNumber) <- "UTF-8"
+Encoding(ch.data$CSCategory) <- "UTF-8"
+Encoding(ch.data$CSDescription) <- "UTF-8"
+Encoding(ch.data$provisorName) <- "UTF-8"
+>>>>>>> e0713a90b9539935bc2abe0cec7586d95cd78895
 Encoding(ch.data$provisorSex) <- "UTF-8"
 Encoding(ch.data$provisorEducation) <- "UTF-8"
 Encoding(ch.data$provisorCategory) <- "UTF-8"
 Encoding(ch.data$provisorDescription) <- "UTF-8"
+<<<<<<< HEAD
 Encoding(ch.data$op.txt) <- "UTF-8"
+=======
+
+>>>>>>> e0713a90b9539935bc2abe0cec7586d95cd78895
 ch.data %>% 
   select(ДатаВремяСессии          = sessid,
           КатегорияПосетителя     = visitorCategory,
