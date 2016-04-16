@@ -57,3 +57,6 @@ sqlitebrowser_200_b1_win/
 database.sqlite
 #NeuroShmeeg.exe
 .Rhistory
+/r-scripts/*
+!/r-scripts/*.r
+!/r-scripts/*.rmd
