@@ -191,7 +191,7 @@ EndIf
 
 
 OpenWindowMain() : StickyWindow(#WindowMain, 1)
-SetWindowTitle(#WindowMain, "NS "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount))
+SetWindowTitle(#WindowMain, "Хронометр рабочей смены рецептара "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount))
 AddKS()
 For x = #b02 To #b20: DisableGadget(x, 1) : Next
 DisableGadget(#b00, 1)
@@ -221,7 +221,7 @@ Repeat
     StartTime = ElapsedMilliseconds()
     StartDate = Date()*1000
     SetGadgetState(#DateGadget, Date())
-    SetWindowTitle(#WindowMain, "NS "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor))
+    SetWindowTitle(#WindowMain, "Хронометр рабочей смены рецептара "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor))
     DisableGadget(#ButtonTimeShiftStart, 0) : DisableGadget(#ButtonTimeShiftPause, 1) : DisableGadget(#DateGadget, 0)
   EndIf
   If (Gadget = #ButtonTimeShiftStart And Type = #PB_EventType_LeftClick)
@@ -233,12 +233,12 @@ Repeat
       StartDate = ts
     EndIf
     TimeShift = 1 ; таймшифт - таймер тикает
-    SetWindowTitle(#WindowMain, "NS "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor)+": Работает сдвиг времени")
+    SetWindowTitle(#WindowMain, "Хронометр рабочей смены рецептара "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor)+": Работает сдвиг времени")
     DisableGadget(#ButtonTimeShiftStart, 1) : DisableGadget(#ButtonTimeShiftPause, 0) : DisableGadget(#DateGadget, 0)
   EndIf
   If Gadget = #ButtonTimeShiftPause And Type = #PB_EventType_LeftClick
     TimeShift = 2
-    SetWindowTitle(#WindowMain, "NS "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor)+": Включена пауза в режиме сдвига времени")
+    SetWindowTitle(#WindowMain, "Хронометр рабочей смены рецептара "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor)+": Включена пауза в режиме сдвига времени")
     DisableGadget(#ButtonTimeShiftStart, 0) : DisableGadget(#ButtonTimeShiftPause, 1) : DisableGadget(#DateGadget, 1)
   EndIf
   ; обновление по таймеру
@@ -258,7 +258,7 @@ Repeat
       StartTime = ElapsedMilliseconds()
       StartDate = ts
       TimeShift = 1 ; таймшифт - таймер тикает
-      SetWindowTitle(#WindowMain, "NS "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor)+": Работает сдвиг времени")
+      SetWindowTitle(#WindowMain, "Хронометр рабочей смены рецептара "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor)+": Работает сдвиг времени")
       DisableGadget(#ButtonTimeShiftStart, 1) : DisableGadget(#ButtonTimeShiftPause, 0) : DisableGadget(#DateGadget, 0)
       ts = ElapsedMilliseconds() - StartTime + StartDate
     EndIf
@@ -515,7 +515,7 @@ Repeat
         ;-------------------------------------------------------------
       Case #ComboProvisor
         sessID = Date()
-        SetWindowTitle(#WindowMain, "NS "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor))
+        SetWindowTitle(#WindowMain, "Хронометр рабочей смены рецептара "+NS_version+"."+Str(#Pb_editor_BuildCount)+"."+Str(#Pb_Editor_CompileCount)+" - "+GetGadgetText(#ComboProvisor))
         query = "SELECT CSNumber, provisorTNumber FROM provisors WHERE provisorName = '"+GetGadgetText(#ComboProvisor)+"'"
         If OpenDatabase(0, dbFile, "", "")
           If DatabaseQuery(0, query)
@@ -569,7 +569,8 @@ Repeat
 Until Event=#PB_Event_CloseWindow
 ; IDE Options = PureBasic 5.20 LTS (Windows - x86)
 ; CursorPosition = 16
-; Folding = Aww
+; FirstLine = 13
+; Folding = Aw1
 ; EnableUnicode
 ; EnableXP
 ; EnableCompileCount = 29
